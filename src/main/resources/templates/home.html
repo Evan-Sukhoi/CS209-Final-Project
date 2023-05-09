@@ -2,29 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Java2 Project Demo</title>
+    <title>Java2 Project</title>
     <!--  Import echarts lib by CDN, you can also import from local files  -->
     <script src='https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/echarts-wordcloud@2/dist/echarts-wordcloud.min.js"></script>
+
     <!--  Import the data files  -->
     <script src='../js/wordcloud-demo.js'></script>
     <script src='../js/piechart-demo.js'></script>
+    <style>
+        h1 {
+
+        }
+        .button {
+            font-size: 20px;
+        }
+    </style>
 </head>
-<body style="text-align: center">
-<h1>Rust Tag</h1>
-<h4>This is just a demo page</h4>
-<div style="width: 100%;height: 60vh;display: flex">
-    <div style="width: 50%;height: 100%">
-        <div id="wordcloud" style="height: 100%;width: 100%"></div>
-    </div>
-    <div style="width: 50%;height: 100%">
-        <div id="piechart" style="height: 100%;width: 100%"></div>
-    </div>
-</div>
+<body style="text-align: center;background: url('/images/1.png');background-size: cover">
+<h1>Home Page</h1>
+<span style="font-size: 20px">Please click the buttons to get data about</span>
+<button class="button" onclick='location.href="answers"'>answers</button>
+<button class="button" onclick='location.href="tags"'>tags</button>
+<button class="button" onclick='location.href="users"'>users</button>
+<br><br><br><br><br><br>
+<form action="" method="post" style="font-size: 50px">
+    <select>
+        <option value="">Which question do you want to ask?</option>
+        <option value=1>What percentage of questions don't have any answer?</option>
+        <option value=2>What is the average and maximum number of answers?</option>
+        <option value=3>What is the distribution of the number of answers?</option>
+        <option value=4>Which tags frequently appear together with the java tag?</option>
+        <option value=5>Which tags or tag combinations receive the most upvotes?</option>
+        <option value=6>Which tags or tag combinations receive the most views?</option>
+        <option value=7>Which are the most active users who frequently participate in thread discussions?</option>
+        <option value=8>What is the distribution of the user participation</option>
+        <option value=9>Which question do you want to ask?</option>
+        <option value=10>Which question do you want to ask?</option>
+    </select>
+    <input type="submit" name="summit">
+</form>
 </body>
 
-<script>
-<!--  echarts configuration  -->
+<!--<script>
+&lt;!&ndash;  echarts configuration  &ndash;&gt;
     let wordcloud = echarts.init(document.getElementById('wordcloud'));
     let wordcloudData = [];
     for (const key in wordcloudRaw) {
@@ -141,6 +162,8 @@
         ]
     };
     piechart.setOption(pieOption);
-</script>
+
+
+</script>-->
 
 </html>

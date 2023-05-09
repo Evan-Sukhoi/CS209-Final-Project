@@ -24,13 +24,13 @@ import java.util.concurrent.ExecutionException;
 
 public class addData {
 
-  private static final String DB_URL = "jdbc:mysql://localhost:3306/public?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+  private static final String DB_URL = "jdbc:mysql://localhost:3306/mydatabase";
   private static final String USER = "root";
-  private static final String PASS = "LywMysql";
+  private static final String PASS = "010504";
 
   public static void main(String[] args) {
-//    addQuestion();
-//    updateQuestion();
+    addQuestion();
+    updateQuestion();
     
     addUsers();
   }
@@ -131,7 +131,6 @@ public class addData {
         tasks.add(CompletableFuture.runAsync(() -> insertJsonObjectIntoDatabase(item, api))
         );
       }
-
       CompletableFuture.allOf(tasks.toArray(new CompletableFuture<?>[0])).join();
     });
 
