@@ -1,4 +1,4 @@
-package cse.java2.project.questions;
+package cse.java2.project.model;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

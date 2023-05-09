@@ -1,4 +1,4 @@
-package cse.java2.project.questions;
+package cse.java2.project.service;
 
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
