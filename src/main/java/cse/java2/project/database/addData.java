@@ -12,11 +12,14 @@ import java.sql.SQLException;
 import com.google.gson.JsonObject;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Evan
@@ -24,31 +27,173 @@ import java.util.concurrent.ExecutionException;
 
 public class addData {
 
-  private static final String DB_URL = "jdbc:mysql://localhost:3306/mydatabase";
+  private static final String DB_URL = "jdbc:mysql://localhost:3306/public";
   private static final String USER = "root";
-  private static final String PASS = "010504";
+  private static final String PASS = "LywMysql";
 
   public static void main(String[] args) {
-    addQuestion();
-    updateQuestion();
-    
-    addUsers();
+//    addQuestion();
+//    updateQuestionAcptInfo();
+
+//    updateQuestionTags();
+//    addTags();
+
+    addTagsJavaRelated();
+
+//    updateUsers();
   }
 
-  private static void addUsers() {
+  private static void addTagsJavaRelated() {
+    List<JsonObject> tags = getTagsForJavaRelated();
+
+    String sql = "INSERT INTO tags_java_related (name, count) VALUES (?, ?) "
+        + "ON DUPLICATE KEY UPDATE count = count + ?;";
+
+    try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        PreparedStatement pstmt = conn.prepareStatement(sql);){
+
+      for (JsonObject tag : tags) {
+        String tagCombination = tag.get("name").getAsString();
+
+        List<String> tagList = Arrays.asList(tagCombination.split("," ));
+
+        if (tagList.size() != 1 && tagList.contains("java")) {
+          tagList.remove("java");
+          for (String tagName : tagList) {
+            pstmt.setString(1, tagName);
+            pstmt.setInt(2, tag.get("count").getAsInt());
+            pstmt.setInt(3, tag.get("count").getAsInt());
+            pstmt.executeUpdate();
+          }
+        }
+
+      }
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
   }
 
-  private static void updateQuestion() {
+
+
+  private static void addTags() {
+    List<JsonObject> tags = getAllTags();
+
+    String sql = "INSERT INTO tags (name, score, view_count, count) VALUES (?, ?, ?, 1) "
+        + "ON DUPLICATE KEY UPDATE count = count + 1, score = score + ?, view_count = view_count + ?;";
+
+
+    try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+      for (JsonObject tag : tags) {
+        String tagCombination = tag.get("tags").getAsString();
+        String regex = "\\\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\\\""; // 正则表达式，匹配引号内的内容，忽略转义引号
+
+        // 创建 Pattern 对象
+
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(tagCombination);
+
+        StringBuilder result = new StringBuilder();
+        while (matcher.find()) {
+          if (result.length() > 0) {
+            result.append(",");
+          }
+          result.append(matcher.group(1));
+        }
+
+        pstmt.setString(1, result.toString());
+        pstmt.setInt(2, tag.get("score").getAsInt());
+        pstmt.setInt(3, tag.get("view_count").getAsInt());
+
+        pstmt.setInt(4, tag.get("score").getAsInt());
+        pstmt.setInt(5, tag.get("view_count").getAsInt());
+
+        pstmt.executeUpdate();
+      }
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+
+  private static void updateUsers() {
+    StackOverflowApi api = new StackOverflowApi();
+
+    // 获取数据库中的所有Question的id
+    List<Integer> questionIds = getAllQuestionIds();
+
+    for (int questionId : questionIds) {
+      System.out.println(questionId);
+      // 调用queryQuestion方法，获取questionId对应的问题的信息
+      JsonObject question = queryQuestion(questionId, api);
+      // 调用queryQuestionOwner方法，获取questionId对应的问题的提问者的信息
+      JsonObject owner = question.get("owner").getAsJsonObject();
+      if (owner.get("user_type").getAsString().equals("does_not_exist")) {
+        continue;
+      }
+      int ownerId = owner.get("user_id").getAsInt();
+      String ownerName = owner.get("display_name").getAsString();
+      insertUser(ownerId, ownerName);
+
+      // 调用queryQuestionAnswers方法，获取questionId对应的问题的回答的信息
+      JsonArray answers = queryQuestionAnswers(questionId, api);
+      // 将回答者的信息插入到数据库中
+      for (int i = 0; i < answers.size() - 3; i++) {
+        JsonObject answer = answers.get(i).getAsJsonObject();
+        JsonObject answerOwner = answer.get("owner").getAsJsonObject();
+        if (answerOwner.get("user_type").getAsString().equals("does_not_exist")) {
+          continue;
+        }
+        int answerOwnerId = answerOwner.get("user_id").getAsInt();
+        String answerOwnerName = answerOwner.get("display_name").getAsString();
+        insertUser(answerOwnerId, answerOwnerName);
+      }
+
+      // 调用queryQuestionComments方法，获取questionId对应的问题的评论的信息
+      JsonArray comments = queryQuestionComments(questionId, api);
+      // 将评论者的信息插入到数据库中
+      for (int i = 0; i < comments.size() - 3; i++) {
+        JsonObject comment = comments.get(i).getAsJsonObject();
+        JsonObject commentOwner = comment.get("owner").getAsJsonObject();
+        if (commentOwner.get("user_type").getAsString().equals("does_not_exist")) {
+          continue;
+        }
+        int commentOwnerId = commentOwner.get("user_id").getAsInt();
+        String commentOwnerName = commentOwner.get("display_name").getAsString();
+        insertUser(commentOwnerId, commentOwnerName);
+      }
+    }
+  }
+
+
+  private static void insertUser(int ownerId, String ownerName) {
+    String sql = "INSERT INTO users (account_id, display_name, count) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE count = count + 1;";
+
+    try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+      pstmt.setInt(1, ownerId);
+      pstmt.setString(2, ownerName);
+      pstmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private static void updateQuestionAcptInfo() {
     StackOverflowApi api = new StackOverflowApi();
 
     // 获取数据库中的所有is_answered为真的数据
-    List<JsonObject> dataList = getAllDataFromDatabase();
+    List<JsonObject> dataList = getAllDataFromDatabaseForAcptInfo();
 
     // 对数据进行修改
     for (JsonObject data : dataList) {
       int acceptedAnswerId = data.get("accepted_answer_id").getAsInt();
       // 调用queryQuestion方法，获取accepted_answer_id对应的回答的信息
-      JsonObject answer = queryQuestion(acceptedAnswerId, api);
+      JsonObject answer = queryQuestionByAnswer(acceptedAnswerId, api);
 
       long acceptedDate = answer.get("creation_date").getAsLong() * 1000;
       data.addProperty("accepted_date", acceptedDate);
@@ -65,12 +210,56 @@ public class addData {
 
       // 更新数据库中的数据
       updateDataInDatabase(data);
-
     }
-
   }
 
-  static List<JsonObject> getAllDataFromDatabase() {
+  private static void updateQuestionTags() {
+    StackOverflowApi api = new StackOverflowApi();
+
+    // 获取数据库中的所有Question的id
+    List<Integer> questionIds = getAllQuestionIds();
+
+    for (int questionId : questionIds) {
+      // 调用queryQuestion方法，获取问题的信息
+      JsonObject question;
+      try{ question = queryQuestion(questionId, api);}
+      catch (Exception e){
+        e.printStackTrace();
+        continue;
+      }
+      // 获取问题的标签
+      JsonArray tags = question.get("tags").getAsJsonArray();
+      int score = question.get("score").getAsInt();
+      int viewCount = question.get("view_count").getAsInt();
+
+
+      // 将标签转换为字符串
+      String tagsString = tags.toString();
+
+      // 更新数据库中的数据
+      updateTagsInDatabase(questionId, tagsString, score, viewCount);
+    }
+  }
+
+  private static void updateTagsInDatabase(int questionId, String tagsString, int score, int viewCount) {
+    String sql = "UPDATE questions SET tags = ?, score = ?, view_count = ? WHERE question_id = ?";
+
+    try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+      // 根据你的表结构，设置预处理语句中的参数值
+      stmt.setString(1, tagsString);
+      stmt.setInt(2, score);
+      stmt.setInt(3, viewCount);
+      stmt.setInt(4, questionId);
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+
+  static List<JsonObject> getAllDataFromDatabaseForAcptInfo() {
     List<JsonObject> dataList = new ArrayList<>();
     String sql = "SELECT * FROM questions WHERE is_answered = true";
 
@@ -92,6 +281,72 @@ public class addData {
 
     return dataList;
   }
+
+  private static List<Integer> getAllQuestionIds() {
+    List<Integer> questionIds = new ArrayList<>();
+    String sql = "SELECT question_id FROM questions ORDER BY question_id ASC";
+
+    try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery()) {
+
+      while (rs.next()) {
+        questionIds.add(rs.getInt("question_id"));
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    return questionIds;
+  }
+
+  private static List<JsonObject> getAllTags() {
+    List<JsonObject> dataList = new ArrayList<>();
+    String sql = "SELECT tags, score, view_count FROM questions";
+
+    try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery()) {
+
+      while (rs.next()) {
+        JsonObject jsonObject = new JsonObject();
+        // 获取每一行的数据
+        jsonObject.addProperty("tags", rs.getString("tags"));
+        jsonObject.addProperty("score", rs.getString("score"));
+        jsonObject.addProperty("view_count", rs.getString("view_count"));
+        dataList.add(jsonObject);
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    return dataList;
+  }
+
+  private static List<JsonObject> getTagsForJavaRelated() {
+    List<JsonObject> tags = new ArrayList<>();
+
+    String sql = "SELECT name, count FROM tags;";
+    try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+      ResultSet rs = pstmt.executeQuery();
+
+      while (rs.next()) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("name", rs.getString("name"));
+        jsonObject.addProperty("count", rs.getString("count"));
+        tags.add(jsonObject);
+      }
+
+      return tags;
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
 
   static void updateDataInDatabase(JsonObject data) {
     String sql = "UPDATE questions SET accepted_answer_id = ?, accepted_date = ?, not_public_will = ? WHERE question_id = ?";
@@ -157,29 +412,6 @@ public class addData {
         pstmt.setInt(5, acceptedAnswerId);
       }
 
-//       如果问题有被回答，将回答的信息也填入sql语句
-//      if (is_answered) {
-//        // 获取accepted_answer_id
-//        int acceptedAnswerId = jsonObject.get("accepted_answer_id").getAsInt();
-//        pstmt.setInt(5, acceptedAnswerId);
-//        // 调用queryQuestion方法，获取accepted_answer_id对应的回答的信息
-//        JsonObject answer = queryQuestion(acceptedAnswerId, api);
-//        Date acceptedDate = new Date(answer.get("creation_date").getAsLong() * 1000);
-//        Timestamp acceptedTimestamp = new Timestamp(acceptedDate.getTime());
-//        pstmt.setTimestamp(6, acceptedTimestamp);
-//
-//        int acceptedScore = answer.get("score").getAsInt();
-//
-//        // 调用queryTopAnswer方法，获取问题的最高票回答的信息
-//        JsonObject answerOfQuestion = queryTopAnswer(jsonObject.get("question_id").getAsInt(), api);
-//        int score = answerOfQuestion.get("score").getAsInt();
-//
-//        pstmt.setBoolean(7, acceptedScore >= score);
-//      }else {
-//        pstmt.setNull(5, java.sql.Types.INTEGER);
-//        pstmt.setNull(6, java.sql.Types.TIMESTAMP);
-//        pstmt.setNull(7, java.sql.Types.BOOLEAN);
-//      }
       pstmt.setNull(6, java.sql.Types.TIMESTAMP);
       pstmt.setNull(7, java.sql.Types.BOOLEAN);
 
@@ -190,10 +422,25 @@ public class addData {
     }
   }
 
-  static JsonObject queryQuestion(int answer_id, StackOverflowApi api) {
+  static JsonObject queryQuestionByAnswer(int answer_id, StackOverflowApi api) {
     Map<String, String> params = new HashMap<>(1);
     params.put("ids", String.valueOf(answer_id));
     CompletableFuture<JsonObject> future = api.fetchData("answers", params);
+
+    try {
+      JsonObject jsonObject = future.get();
+      JsonArray items = jsonObject.getAsJsonArray("items");
+      return items.get(0).getAsJsonObject();
+    } catch (InterruptedException | ExecutionException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  static JsonObject queryQuestion(int question_id, StackOverflowApi api) {
+    Map<String, String> params = new HashMap<>(1);
+    params.put("ids", String.valueOf(question_id));
+    CompletableFuture<JsonObject> future = api.fetchData("questions", params);
 
     try {
       JsonObject jsonObject = future.get();
@@ -219,6 +466,34 @@ public class addData {
 
     } catch (ExecutionException | InterruptedException e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  private static JsonArray queryQuestionAnswers(int questionId, StackOverflowApi api) {
+    Map<String, String> params = new HashMap<>(1);
+    params.put("ids", String.valueOf(questionId));
+    params.put("pagesize", "100");
+    CompletableFuture<JsonObject> future = api.fetchData("answer_question", params);
+    try {
+      JsonObject jsonObject = future.get();
+      return jsonObject.getAsJsonArray("items");
+    } catch (InterruptedException | ExecutionException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  private static JsonArray queryQuestionComments(int questionId, StackOverflowApi api) {
+    Map<String, String> params = new HashMap<>(1);
+    params.put("ids", String.valueOf(questionId));
+    params.put("pagesize", "100");
+    CompletableFuture<JsonObject> future = api.fetchData("comment_question", params);
+    try {
+      JsonObject jsonObject = future.get();
+      return jsonObject.getAsJsonArray("items");
+    } catch (InterruptedException | ExecutionException e) {
+      e.printStackTrace();
+      return null;
     }
   }
 

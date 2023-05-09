@@ -7,8 +7,7 @@ import okhttp3.*;
 import com.google.gson.*;
 
 /**
- * @author Evan
- * This class is used to fetch data from Stack Overflow API.
+ * @author Evan This class is used to fetch data from Stack Overflow API.
  */
 public class StackOverflowApi {
 
@@ -22,11 +21,19 @@ public class StackOverflowApi {
     CompletableFuture<JsonObject> future = new CompletableFuture<>();
 
     HttpUrl url = null;
+    String urlPath = null;
 
     // 构建请求 URL
     switch (op) {
       case "questions":
-        url = HttpUrl.parse(API_BASE_URL + "/questions")
+        if (params.containsKey("ids")) {
+          int questionId = Integer.parseInt(params.get("ids"));
+          params.remove("ids"); // 删除params中的ids参数
+          urlPath = String.format("/questions/%d", questionId); // 将id插入到URL路径中
+        }else {
+          urlPath = "/questions";
+        }
+        url = HttpUrl.parse(API_BASE_URL + urlPath)
             .newBuilder()
             .addQueryParameter("tagged", "python")
             .addQueryParameter("site", "stackoverflow")
@@ -45,7 +52,7 @@ public class StackOverflowApi {
       case "answers":
         int answerId = Integer.parseInt(params.get("ids"));
         params.remove("ids"); // 删除params中的ids参数
-        String urlPath = String.format("/answers/%d", answerId); // 将answer_id插入到URL路径中
+        urlPath = String.format("/answers/%d", answerId); // 将answer_id插入到URL路径中
         url = HttpUrl.parse(API_BASE_URL + urlPath)
             .newBuilder()
             .addQueryParameter("site", "stackoverflow")
@@ -55,6 +62,14 @@ public class StackOverflowApi {
 
       case "answer_question":
         url = HttpUrl.parse(API_BASE_URL + "/questions/" + params.get("ids") + "/answers")
+            .newBuilder()
+            .addQueryParameter("site", "stackoverflow")
+            .addQueryParameter("key", API_KEY)
+            .build();
+        break;
+
+      case "comment_question":
+        url = HttpUrl.parse(API_BASE_URL + "/questions/" + params.get("ids") + "/comments")
             .newBuilder()
             .addQueryParameter("site", "stackoverflow")
             .addQueryParameter("key", API_KEY)
