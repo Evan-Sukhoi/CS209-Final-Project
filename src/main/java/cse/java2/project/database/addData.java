@@ -20,7 +20,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * @author Evan
@@ -33,7 +32,7 @@ public class addData {
   private static final String PASS = "LywMysql";
 
   public static void main(String[] args) {
-//    addQuestion();
+    addQuestion();
 //    updateQuestionAcptInfo();
 
 //    updateQuestionTags();
@@ -41,7 +40,64 @@ public class addData {
 //
 //    addTagsJavaRelated();
 //
-    updateUsers();
+//    updateUsers();
+
+//    addBodies();
+  }
+
+  private static void addBodies() {
+    List<Integer> questionIds = getAllQuestionIds();
+
+    String sql1 = "INSERT INTO answers (answer_id, question_id, body) VALUES (?, ?, ?) ";
+    String sql2 = "INSERT INTO comments (comment_id, question_id, body) VALUES (?, ?, ?) ";
+    String sql3 = "Update questions SET body = ? WHERE question_id = ?";
+
+    try(
+        Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        PreparedStatement pstmt1 = conn.prepareStatement(sql1);
+        PreparedStatement pstmt2 = conn.prepareStatement(sql2);
+        PreparedStatement pstmt3 = conn.prepareStatement(sql3);
+        ) {
+      for (Integer questionId : questionIds) {
+        StackOverflowApi api = new StackOverflowApi();
+        Map<String, String> params = new HashMap<>();
+
+        params.put("ids", questionId.toString());
+        String filter = "!-KbmneoxTT(85c6ZIwXKXNeD**.IX4rPe";
+//        filter = URLEncoder.encode(filter, "UTF-8"); // 对filter参数的值进行编码
+        params.put("filter", filter);
+        CompletableFuture<JsonObject> future = api.fetchData("questions", params);
+
+        JsonObject question = future.get().getAsJsonArray("items").get(0).getAsJsonObject();
+        String questionBody = question.get("body").getAsString();
+        pstmt3.setString(1, questionBody);
+        pstmt3.setInt(2, questionId);
+        pstmt3.executeUpdate();
+
+        if (question.has("answers")) {
+          JsonArray answers = question.get("answers").getAsJsonArray();
+          for (int i = 0; i < answers.size(); i++) {
+            JsonObject answer = answers.get(i).getAsJsonObject();
+            pstmt1.setInt(1, answer.get("answer_id").getAsInt());
+            pstmt1.setInt(2, questionId);
+            pstmt1.setString(3, answer.get("body").getAsString());
+            pstmt1.executeUpdate();
+          }
+        }
+        if (question.has("comments")) {
+          JsonArray comments = question.get("comments").getAsJsonArray();
+          for (int i = 0; i < comments.size(); i++) {
+            JsonObject comment = comments.get(i).getAsJsonObject();
+            pstmt2.setInt(1, comment.get("comment_id").getAsInt());
+            pstmt2.setInt(2, questionId);
+            pstmt2.setString(3, comment.get("body").getAsString());
+            pstmt2.executeUpdate();
+          }
+        }
+      }
+    } catch (SQLException | InterruptedException | ExecutionException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private static void addTagsJavaRelated() {
@@ -133,15 +189,16 @@ public class addData {
 
       // 调用queryQuestion方法，获取questionId对应的问题的信息
       JsonObject question = queryQuestion(questionId, api);
+
       // 调用queryQuestionOwner方法，获取questionId对应的问题的提问者的信息
       JsonObject owner = question.get("owner").getAsJsonObject();
-      if (owner.get("user_type").getAsString().equals("does_not_exist")) {
-        continue;
+
+      if (!owner.get("user_type").getAsString().equals("does_not_exist")) {
+        int ownerId = owner.get("user_id").getAsInt();
+        String ownerName = owner.get("display_name").getAsString();
+        insertUser(ownerId, ownerName);
+        userIds.add(ownerId);
       }
-      int ownerId = owner.get("user_id").getAsInt();
-      String ownerName = owner.get("display_name").getAsString();
-      insertUser(ownerId, ownerName);
-      userIds.add(ownerId);
 
       // 调用queryQuestionAnswers方法，获取questionId对应的问题的回答的信息
       JsonArray answers = queryQuestionAnswers(questionId, api);
@@ -308,7 +365,7 @@ public class addData {
 
   private static List<Integer> getAllQuestionIds() {
     List<Integer> questionIds = new ArrayList<>();
-    String sql = "SELECT question_id FROM questions ORDER BY question_id ASC";
+    String sql = "SELECT question_id FROM questions where question_id >= 0 ORDER BY question_id ASC";
 
     try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
         PreparedStatement stmt = conn.prepareStatement(sql);
@@ -393,8 +450,8 @@ public class addData {
     // 使用StackOverflowApi类的fetchData方法，向StackExchange API发送请求
     StackOverflowApi api = new StackOverflowApi();
     Map<String, String> params = new HashMap<>(1);
-    params.put("pagesize", "100");
-    params.put("page", "18");
+    params.put("pagesize", "1");
+    params.put("page", "1");
     params.put("sort", "activity");
 //    params.put("sort", "votes");
 //    params.put("sort", "hot");

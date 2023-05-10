@@ -12,7 +12,7 @@ import com.google.gson.*;
 public class StackOverflowApi {
 
   private static final String API_BASE_URL = "https://api.stackexchange.com/2.3";
-  private static final String API_KEY = "kcM5s9XKgXkSQ38shvfDSQ((";
+  private static final String API_KEY = "qeUQ3LQJnDuzdfxTekiPSg((";
 
   public CompletableFuture<JsonObject> fetchData(String op, Map<String, String> params) {
     OkHttpClient client = new OkHttpClient();
@@ -35,7 +35,6 @@ public class StackOverflowApi {
         }
         url = HttpUrl.parse(API_BASE_URL + urlPath)
             .newBuilder()
-            .addQueryParameter("tagged", "java")
             .addQueryParameter("site", "stackoverflow")
             .addQueryParameter("key", API_KEY)
             .build();
@@ -91,6 +90,8 @@ public class StackOverflowApi {
 
     // 发送请求并处理响应
     HttpUrl finalUrl = url;
+    System.out.println(finalUrl);
+
     client.newCall(request).enqueue(new Callback() {
       @Override
       public void onFailure(Call call, IOException e) {
@@ -105,7 +106,6 @@ public class StackOverflowApi {
         } else {
           String jsonData = response.body().string();
           // 使用 Gson 解析 JSON 数据
-          // TODO: （定义一个实体类？）处理、存储、显示解析后的数据
           JsonObject jsonObject = gson.fromJson(jsonData, JsonObject.class);
           System.out.println(finalUrl);
           System.out.println(jsonObject);
