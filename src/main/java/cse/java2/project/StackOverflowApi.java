@@ -12,7 +12,7 @@ import com.google.gson.*;
 public class StackOverflowApi {
 
   private static final String API_BASE_URL = "https://api.stackexchange.com/2.3";
-  private static final String API_KEY = "qeUQ3LQJnDuzdfxTekiPSg((";
+  private static final String API_KEY = "q4HEPkqa2VgxadFz7v5iWQ((";
 
   public CompletableFuture<JsonObject> fetchData(String op, Map<String, String> params) {
     OkHttpClient client = new OkHttpClient();
@@ -90,7 +90,6 @@ public class StackOverflowApi {
 
     // 发送请求并处理响应
     HttpUrl finalUrl = url;
-    System.out.println(finalUrl);
 
     client.newCall(request).enqueue(new Callback() {
       @Override

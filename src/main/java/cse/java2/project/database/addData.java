@@ -1,5 +1,13 @@
 package cse.java2.project.database;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.ImportDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.google.gson.JsonArray;
 import cse.java2.project.StackOverflowApi;
 import java.sql.Connection;
@@ -32,17 +40,114 @@ public class addData {
   private static final String PASS = "LywMysql";
 
   public static void main(String[] args) {
-    addQuestion();
+//    addQuestion();
 //    updateQuestionAcptInfo();
 
 //    updateQuestionTags();
 //    addTags();
-//
+
 //    addTagsJavaRelated();
-//
+
 //    updateUsers();
 
 //    addBodies();
+
+    findHotAPI();
+  }
+
+  private static void findHotAPI() {
+    List<String> questionBodies = getAllBodies("questions");
+    List<String> answerBodies = getAllBodies("answers");
+    List<String> commentBodies = getAllBodies("comments");
+
+    Map<String, Integer> api = new HashMap<>();
+
+    findAPI(questionBodies, api);
+    findAPI(answerBodies, api);
+    findAPI(commentBodies, api);
+
+    //print api
+    api.entrySet().stream().sorted(Map.Entry.<String, Integer>comparingByValue().reversed()).limit(100).forEach(System.out::println);
+
+    // 把api的数据导入到数据库hot_api
+    try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)) {
+      String sql = "INSERT INTO hot_api (name, count) VALUES (?, ?)";
+      PreparedStatement pstmt = conn.prepareStatement(sql);
+      for (Map.Entry<String, Integer> entry : api.entrySet()) {
+        pstmt.setString(1, entry.getKey());
+        pstmt.setInt(2, entry.getValue());
+        pstmt.executeUpdate();
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private static Map<String, Integer> findAPI(List<String> bodies, Map<String, Integer> api) {
+
+    for (String body : bodies) {
+//      System.out.println(body);
+      // 用JavaParser解析代码片段
+      JavaParser javaParser = new JavaParser(new ParserConfiguration().setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_8).setStoreTokens(true));
+      ParseResult<CompilationUnit> parseResult = javaParser.parse(body);
+      if (parseResult.isSuccessful()) {
+        CompilationUnit cu = parseResult.getResult().get();
+
+        // 使用Visitor模式遍历AST并找出所有方法声明
+        cu.accept(new VoidVisitorAdapter<Void>() {
+          @Override
+          public void visit(MethodDeclaration md, Void arg) {
+            super.visit(md, arg);
+            api.put(md.getNameAsString(), api.getOrDefault(md.getNameAsString(), 0) + 1);
+          }
+        }, null);
+
+        // 使用Visitor模式遍历AST并找出所有类声明
+        cu.accept(new VoidVisitorAdapter<Void>() {
+          @Override
+          public void visit(ClassOrInterfaceDeclaration cid, Void arg) {
+            super.visit(cid, arg);
+            api.put(cid.getNameAsString(), api.getOrDefault(cid.getNameAsString(), 0) + 1);
+          }
+        }, null);
+
+        // 遍历所有的import声明
+        for (ImportDeclaration importDeclaration : cu.getImports()) {
+          api.put(importDeclaration.getNameAsString(), api.getOrDefault(importDeclaration.getNameAsString(), 0) + 1);
+        }
+
+      }
+    }
+    return api;
+  }
+
+  private static List<String> getAllBodies(String table) {
+    String sql = "SELECT body FROM " + table + ";";
+    List<String> bodies = new ArrayList<>();
+    try (
+        Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+    ) {
+      ResultSet rs = pstmt.executeQuery();
+      String regex = "<code>(.*?)</code>";
+
+      Pattern pattern = Pattern.compile(regex, Pattern.DOTALL);
+      Matcher matcher;
+      while (rs.next()) {
+        String body = rs.getString("body");
+
+        if (body != null) {
+          matcher = pattern.matcher(body);
+          while (matcher.find()) {
+            String code = matcher.group(1);
+            bodies.add(code);
+          }
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return bodies;
   }
 
   private static void addBodies() {
@@ -52,12 +157,12 @@ public class addData {
     String sql2 = "INSERT INTO comments (comment_id, question_id, body) VALUES (?, ?, ?) ";
     String sql3 = "Update questions SET body = ? WHERE question_id = ?";
 
-    try(
+    try (
         Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
         PreparedStatement pstmt1 = conn.prepareStatement(sql1);
         PreparedStatement pstmt2 = conn.prepareStatement(sql2);
         PreparedStatement pstmt3 = conn.prepareStatement(sql3);
-        ) {
+    ) {
       for (Integer questionId : questionIds) {
         StackOverflowApi api = new StackOverflowApi();
         Map<String, String> params = new HashMap<>();
@@ -68,6 +173,9 @@ public class addData {
         params.put("filter", filter);
         CompletableFuture<JsonObject> future = api.fetchData("questions", params);
 
+        if (future.get().getAsJsonArray("items").size() == 0) {
+          continue;
+        }
         JsonObject question = future.get().getAsJsonArray("items").get(0).getAsJsonObject();
         String questionBody = question.get("body").getAsString();
         pstmt3.setString(1, questionBody);
@@ -107,12 +215,12 @@ public class addData {
         + "ON DUPLICATE KEY UPDATE count = count + ?;";
 
     try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-        PreparedStatement pstmt = conn.prepareStatement(sql);){
+        PreparedStatement pstmt = conn.prepareStatement(sql);) {
 
       for (JsonObject tag : tags) {
         String tagCombination = tag.get("name").getAsString();
 
-        List<String> tagList = Arrays.asList(tagCombination.split("," ));
+        List<String> tagList = Arrays.asList(tagCombination.split(","));
 
         if (tagList.size() != 1 && tagList.contains("java")) {
           tagList.remove("java");
@@ -133,13 +241,11 @@ public class addData {
   }
 
 
-
   private static void addTags() {
     List<JsonObject> tags = getAllTags();
 
     String sql = "INSERT INTO tags (name, score, view_count, count) VALUES (?, ?, ?, 1) "
         + "ON DUPLICATE KEY UPDATE count = count + 1, score = score + ?, view_count = view_count + ?;";
-
 
     try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
         PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -149,7 +255,6 @@ public class addData {
         String regex = "\\\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\\\""; // 正则表达式，匹配引号内的内容，忽略转义引号
 
         // 创建 Pattern 对象
-
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(tagCombination);
 
@@ -302,8 +407,9 @@ public class addData {
     for (int questionId : questionIds) {
       // 调用queryQuestion方法，获取问题的信息
       JsonObject question;
-      try{ question = queryQuestion(questionId, api);}
-      catch (Exception e){
+      try {
+        question = queryQuestion(questionId, api);
+      } catch (Exception e) {
         e.printStackTrace();
         continue;
       }
@@ -314,15 +420,13 @@ public class addData {
       int score = question.get("score").getAsInt();
       int viewCount = question.get("view_count").getAsInt();
 
-
-
-
       // 更新数据库中的数据
       updateTagsInDatabase(questionId, tagsString, score, viewCount);
     }
   }
 
-  private static void updateTagsInDatabase(int questionId, String tagsString, int score, int viewCount) {
+  private static void updateTagsInDatabase(int questionId, String tagsString, int score,
+      int viewCount) {
     String sql = "UPDATE questions SET tags = ?, score = ?, view_count = ? WHERE question_id = ?";
 
     try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
@@ -365,7 +469,7 @@ public class addData {
 
   private static List<Integer> getAllQuestionIds() {
     List<Integer> questionIds = new ArrayList<>();
-    String sql = "SELECT question_id FROM questions where question_id >= 0 ORDER BY question_id ASC";
+    String sql = "SELECT question_id FROM questions where question_id >= 76214646 ORDER BY question_id ASC";
 
     try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
         PreparedStatement stmt = conn.prepareStatement(sql);
