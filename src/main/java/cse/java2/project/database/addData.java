@@ -20,6 +20,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author Evan
@@ -37,10 +38,10 @@ public class addData {
 
 //    updateQuestionTags();
 //    addTags();
-
-    addTagsJavaRelated();
-
-//    updateUsers();
+//
+//    addTagsJavaRelated();
+//
+    updateUsers();
   }
 
   private static void addTagsJavaRelated() {
@@ -128,6 +129,8 @@ public class addData {
 
     for (int questionId : questionIds) {
       System.out.println(questionId);
+      List<Integer> userIds = new ArrayList<>();
+
       // 调用queryQuestion方法，获取questionId对应的问题的信息
       JsonObject question = queryQuestion(questionId, api);
       // 调用queryQuestionOwner方法，获取questionId对应的问题的提问者的信息
@@ -138,6 +141,7 @@ public class addData {
       int ownerId = owner.get("user_id").getAsInt();
       String ownerName = owner.get("display_name").getAsString();
       insertUser(ownerId, ownerName);
+      userIds.add(ownerId);
 
       // 调用queryQuestionAnswers方法，获取questionId对应的问题的回答的信息
       JsonArray answers = queryQuestionAnswers(questionId, api);
@@ -151,6 +155,7 @@ public class addData {
         int answerOwnerId = answerOwner.get("user_id").getAsInt();
         String answerOwnerName = answerOwner.get("display_name").getAsString();
         insertUser(answerOwnerId, answerOwnerName);
+        userIds.add(answerOwnerId);
       }
 
       // 调用queryQuestionComments方法，获取questionId对应的问题的评论的信息
@@ -165,7 +170,25 @@ public class addData {
         int commentOwnerId = commentOwner.get("user_id").getAsInt();
         String commentOwnerName = commentOwner.get("display_name").getAsString();
         insertUser(commentOwnerId, commentOwnerName);
+        userIds.add(commentOwnerId);
       }
+
+      List<Integer> distinctIDs = userIds.stream().distinct().toList(); // 去重后的List
+      int user_count = distinctIDs.size();
+
+      insertUserCount(questionId, user_count);
+    }
+  }
+
+  private static void insertUserCount(int questionId, int userCount) {
+    String sql = "UPDATE questions SET user_count = ? WHERE question_id = ?;";
+    try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+      pstmt.setInt(1, userCount);
+      pstmt.setInt(2, questionId);
+      pstmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
   }
 
@@ -229,12 +252,13 @@ public class addData {
       }
       // 获取问题的标签
       JsonArray tags = question.get("tags").getAsJsonArray();
+      // 将标签转换为字符串
+      String tagsString = tags.toString();
       int score = question.get("score").getAsInt();
       int viewCount = question.get("view_count").getAsInt();
 
 
-      // 将标签转换为字符串
-      String tagsString = tags.toString();
+
 
       // 更新数据库中的数据
       updateTagsInDatabase(questionId, tagsString, score, viewCount);
@@ -370,10 +394,13 @@ public class addData {
     StackOverflowApi api = new StackOverflowApi();
     Map<String, String> params = new HashMap<>(1);
     params.put("pagesize", "100");
-    params.put("page", "2653");
-//    params.put("sort", "activity");
-    params.put("sort", "votes");
+    params.put("page", "18");
+    params.put("sort", "activity");
+//    params.put("sort", "votes");
+//    params.put("sort", "hot");
     params.put("order", "desc");
+    params.put("tagged", "java");
+
     // 获得返回的JsonObject
     CompletableFuture<JsonObject> future = api.fetchData("questions", params);
 
@@ -393,7 +420,7 @@ public class addData {
 
 
   private static void insertJsonObjectIntoDatabase(JsonObject jsonObject, StackOverflowApi api) {
-    String sql = "INSERT INTO questions (question_id, answer_count, is_answered, creation_date, accepted_answer_id, accepted_date, not_public_will) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO questions (question_id, answer_count, is_answered, creation_date, accepted_answer_id, accepted_date, not_public_will, score, view_count, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)) {
       // 将信息填入sql语句
@@ -407,13 +434,22 @@ public class addData {
       pstmt.setTimestamp(4, timestamp);
 
       pstmt.setNull(5, java.sql.Types.INTEGER);
+      pstmt.setNull(6, java.sql.Types.TIMESTAMP);
+      pstmt.setNull(7, java.sql.Types.BOOLEAN);
+
+      pstmt.setInt(8, jsonObject.get("score").getAsInt());
+      pstmt.setInt(9, jsonObject.get("view_count").getAsInt());
+
+      // 获取问题的标签
+      JsonArray tags = jsonObject.get("tags").getAsJsonArray();
+      // 将标签转换为字符串
+      String tagsString = tags.toString();
+      pstmt.setString(10, tagsString);
+
       if (is_answered) {
         int acceptedAnswerId = jsonObject.get("accepted_answer_id").getAsInt();
         pstmt.setInt(5, acceptedAnswerId);
       }
-
-      pstmt.setNull(6, java.sql.Types.TIMESTAMP);
-      pstmt.setNull(7, java.sql.Types.BOOLEAN);
 
       pstmt.executeUpdate();
       System.out.println("Record inserted successfully");

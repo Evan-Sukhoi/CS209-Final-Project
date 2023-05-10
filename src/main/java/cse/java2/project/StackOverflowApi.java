@@ -35,7 +35,7 @@ public class StackOverflowApi {
         }
         url = HttpUrl.parse(API_BASE_URL + urlPath)
             .newBuilder()
-            .addQueryParameter("tagged", "python")
+            .addQueryParameter("tagged", "java")
             .addQueryParameter("site", "stackoverflow")
             .addQueryParameter("key", API_KEY)
             .build();
