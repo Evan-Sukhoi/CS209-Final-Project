@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author Evan
  */
-public interface QuestionRepository extends JpaRepository<Questions, Long> {
+public interface Repositories extends JpaRepository<Questions, Long> {
     @Query("SELECT count(*) FROM Questions where answer_count <= :max and answer_count >= :min")
     Long findByAnswer_countRange(@Param("min") int min, @Param("max") int max);
     @Query("SELECT count(*) FROM Questions where answer_count >= :min")
