@@ -1,7 +1,7 @@
 package cse.java2.project.controller;
 
 import cse.java2.project.model.Questions;
-import cse.java2.project.service.QuestionService;
+import cse.java2.project.service.Services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,13 +15,13 @@ import java.util.List;
 
 @Controller
 public class DemoController {
-    private final QuestionService questionService;
+    private final Services Services;
 
     static String[] colors = new String[]{"#4e73df", "#1cc88a", "#36b9cc","#c51e1e","#ddda1e","#dd8a18","#1fd632","#d023d3","#e2d0d0","#aeff00","#7e29c8","#007fff","#eb1592","#00f91a","#ffb700"};
     static String[] hoverColors = new String[]{"#2e59d9", "#17a673", "#2c9faf", "#971818", "#c1bf1e", "#bd7b20", "#24b233", "#ad23af", "#c4a9a9", "#9ecf34", "#5c207e", "#166dc4", "#ca2184", "#1dc12e", "#ce9d20"};
     @Autowired
-    public DemoController(QuestionService questionService) {
-        this.questionService = questionService;
+    public DemoController(Services Services) {
+        this.Services = Services;
     }
 
     /**
@@ -37,21 +37,21 @@ public class DemoController {
     @GetMapping({ "/AnswersPage"})
     public String answers(Model model) {
         //The percentage of questions that has no answers
-        model.addAttribute("noAnswersPer", questionService.getNoAnswersPercentage());
+        model.addAttribute("noAnswersPer", Services.getNoAnswersPercentage());
         //The average and maximum number of answers
-        model.addAttribute("avg", questionService.getAnswerCountAverage());
-        model.addAttribute("max", questionService.getAnswerCountMax());
+        model.addAttribute("avg", Services.getAnswerCountAverage());
+        model.addAttribute("max", Services.getAnswerCountMax());
         //The percentage of having an accepted answer
-        model.addAttribute("acceptedAnswersPer", questionService.getHavingAcceptedAnswerPercentage());
+        model.addAttribute("acceptedAnswersPer", Services.getHavingAcceptedAnswerPercentage());
         //The percentage of questions have non-accepted answers that have received more upvotes than the accepted answers
-        model.addAttribute("answerNotWillPer", questionService.getNotWillPercentage());
+        model.addAttribute("answerNotWillPer", Services.getNotWillPercentage());
         return "AnswersPage";
     }
     @GetMapping({ "/TagsPage"})
     public String tags(Model model) {
-        model.addAttribute("mostRelateJava", questionService.getMostRelatedToJavaTop());
-        model.addAttribute("mostQuvotes", questionService.getBestTop());
-        model.addAttribute("mostViews", questionService.getMostFashionTop());
+        model.addAttribute("mostRelateJava", Services.getMostRelatedToJavaTop());
+        model.addAttribute("mostQuvotes", Services.getBestTop());
+        model.addAttribute("mostViews", Services.getMostFashionTop());
         return "TagsPage";
     }
     @GetMapping({ "/UsersPage"})
@@ -60,7 +60,7 @@ public class DemoController {
     }
     @GetMapping({"/ApisPage"})
     public String apis(Model model) {
-        model.addAttribute("mostHotApi", questionService.getMostHotApiTop());
+        model.addAttribute("mostHotApi", Services.getMostHotApiTop());
         return "ApisPage";
     }
 }

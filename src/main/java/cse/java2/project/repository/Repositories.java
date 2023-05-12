@@ -7,14 +7,13 @@ import cse.java2.project.model.TagsJavaRelated;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
  * @author Evan
  */
-public interface QuestionRepository extends JpaRepository<Questions, Long> {
+public interface Repositories extends JpaRepository<Questions, Long> {
     @Query("SELECT count(*) FROM Questions where answer_count <= :max and answer_count >= :min")
     Long findByAnswer_countRange(@Param("min") int min, @Param("max") int max);
     @Query("SELECT count(*) FROM Questions where answer_count >= :min")
