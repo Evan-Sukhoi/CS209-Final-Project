@@ -20,6 +20,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.persistence.criteria.CriteriaBuilder.In;
 
 /**
  * @author Evan
@@ -32,7 +33,7 @@ public class addData {
   private static final String PASS = "LywMysql";
 
   public static void main(String[] args) {
-    addQuestion();
+//    addQuestion();
 //    updateQuestionAcptInfo();
 
 //    updateQuestionTags();
@@ -40,7 +41,7 @@ public class addData {
 //
 //    addTagsJavaRelated();
 //
-//    updateUsers();
+    updateUsers();
 
 //    addBodies();
   }
@@ -185,64 +186,76 @@ public class addData {
 
     for (int questionId : questionIds) {
       System.out.println(questionId);
-      List<Integer> userIds = new ArrayList<>();
+      List<Integer> userIdsAnswer = new ArrayList<>();
+      List<Integer> userIdsComment = new ArrayList<>();
 
       // 调用queryQuestion方法，获取questionId对应的问题的信息
       JsonObject question = queryQuestion(questionId, api);
 
-      // 调用queryQuestionOwner方法，获取questionId对应的问题的提问者的信息
-      JsonObject owner = question.get("owner").getAsJsonObject();
-
-      if (!owner.get("user_type").getAsString().equals("does_not_exist")) {
-        int ownerId = owner.get("user_id").getAsInt();
-        String ownerName = owner.get("display_name").getAsString();
-        insertUser(ownerId, ownerName);
-        userIds.add(ownerId);
+      if (question == null) {
+        continue;
       }
 
+      // 调用queryQuestionOwner方法，获取questionId对应的问题的提问者的信息
+//      JsonObject owner = question.get("owner").getAsJsonObject();
+//
+//      if (!owner.get("user_type").getAsString().equals("does_not_exist")) {
+//        int ownerId = owner.get("user_id").getAsInt();
+////        String ownerName = owner.get("display_name").getAsString();
+////        insertUser(ownerId, ownerName);
+//      }
+
       // 调用queryQuestionAnswers方法，获取questionId对应的问题的回答的信息
-      JsonArray answers = queryQuestionAnswers(questionId, api);
-      // 将回答者的信息插入到数据库中
-      for (int i = 0; i < answers.size() - 3; i++) {
-        JsonObject answer = answers.get(i).getAsJsonObject();
-        JsonObject answerOwner = answer.get("owner").getAsJsonObject();
-        if (answerOwner.get("user_type").getAsString().equals("does_not_exist")) {
-          continue;
+      if (question.has("answers")) {
+        JsonArray answers = question.get("answers").getAsJsonArray();
+        // 将回答者的信息插入到数据库中
+        for (int i = 0; i < answers.size() - 3; i++) {
+          JsonObject answer = answers.get(i).getAsJsonObject();
+          JsonObject answerOwner = answer.get("owner").getAsJsonObject();
+          if (answerOwner.get("user_type").getAsString().equals("does_not_exist")) {
+            continue;
+          }
+          int answerOwnerId = answerOwner.get("user_id").getAsInt();
+//        String answerOwnerName = answerOwner.get("display_name").getAsString();
+//        insertUser(answerOwnerId, answerOwnerName);
+          userIdsAnswer.add(answerOwnerId);
         }
-        int answerOwnerId = answerOwner.get("user_id").getAsInt();
-        String answerOwnerName = answerOwner.get("display_name").getAsString();
-        insertUser(answerOwnerId, answerOwnerName);
-        userIds.add(answerOwnerId);
       }
 
       // 调用queryQuestionComments方法，获取questionId对应的问题的评论的信息
-      JsonArray comments = queryQuestionComments(questionId, api);
-      // 将评论者的信息插入到数据库中
-      for (int i = 0; i < comments.size() - 3; i++) {
-        JsonObject comment = comments.get(i).getAsJsonObject();
-        JsonObject commentOwner = comment.get("owner").getAsJsonObject();
-        if (commentOwner.get("user_type").getAsString().equals("does_not_exist")) {
-          continue;
+      if (question.has("comments")) {
+        JsonArray comments = question.get("comments").getAsJsonArray();
+        // 将评论者的信息插入到数据库中
+        for (int i = 0; i < comments.size() - 3; i++) {
+          JsonObject comment = comments.get(i).getAsJsonObject();
+          JsonObject commentOwner = comment.get("owner").getAsJsonObject();
+          if (commentOwner.get("user_type").getAsString().equals("does_not_exist")) {
+            continue;
+          }
+          int commentOwnerId = commentOwner.get("user_id").getAsInt();
+//        String commentOwnerName = commentOwner.get("display_name").getAsString();
+//        insertUser(commentOwnerId, commentOwnerName);
+          userIdsComment.add(commentOwnerId);
         }
-        int commentOwnerId = commentOwner.get("user_id").getAsInt();
-        String commentOwnerName = commentOwner.get("display_name").getAsString();
-        insertUser(commentOwnerId, commentOwnerName);
-        userIds.add(commentOwnerId);
       }
 
-      List<Integer> distinctIDs = userIds.stream().distinct().toList(); // 去重后的List
-      int user_count = distinctIDs.size();
 
-      insertUserCount(questionId, user_count);
+      List<Integer> distinctIDs = userIdsAnswer.stream().distinct().toList(); // 去重后的List
+      List<Integer> distinctIDs2 = userIdsComment.stream().distinct().toList(); // 去重后的List
+      int user_count = distinctIDs.size() + distinctIDs2.size() + 1; // 加上提问者
+
+      insertUserCount(questionId, user_count, distinctIDs.size(), distinctIDs2.size());
     }
   }
 
-  private static void insertUserCount(int questionId, int userCount) {
-    String sql = "UPDATE questions SET user_count = ? WHERE question_id = ?;";
+  private static void insertUserCount(int questionId, int userCount, int answerCount, int commentCount) {
+    String sql = "UPDATE questions SET comment_user_count = ?, answer_user_count = ?, user_count = ? WHERE question_id = ?;";
     try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
         PreparedStatement pstmt = conn.prepareStatement(sql)) {
-      pstmt.setInt(1, userCount);
-      pstmt.setInt(2, questionId);
+      pstmt.setInt(1, commentCount);
+      pstmt.setInt(2, answerCount);
+      pstmt.setInt(3, userCount);
+      pstmt.setInt(4, questionId);
       pstmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -533,11 +546,16 @@ public class addData {
   static JsonObject queryQuestion(int question_id, StackOverflowApi api) {
     Map<String, String> params = new HashMap<>(1);
     params.put("ids", String.valueOf(question_id));
+    params.put("filter", "!B9tEMyjamHuhqA_ixREf6pYm9fUBiL");
     CompletableFuture<JsonObject> future = api.fetchData("questions", params);
 
     try {
       JsonObject jsonObject = future.get();
       JsonArray items = jsonObject.getAsJsonArray("items");
+      if (items.size() == 0) {
+        System.out.println("Question not found: " + question_id);
+        return null;
+      }
       return items.get(0).getAsJsonObject();
     } catch (InterruptedException | ExecutionException e) {
       e.printStackTrace();
