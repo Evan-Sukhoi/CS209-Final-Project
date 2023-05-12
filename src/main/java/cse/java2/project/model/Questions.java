@@ -15,9 +15,11 @@ public class Questions {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   public int question_id;
   public Integer answer_count;
-  public boolean is_answered;
+  public int is_answered;
   public LocalDateTime creation_date;
   public LocalDateTime accepted_date;
   public Integer accepted_answer_id;
+
+  public int not_public_will;
 
 }
