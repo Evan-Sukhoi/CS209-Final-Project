@@ -19,7 +19,9 @@ public class Questions {
   public LocalDateTime creation_date;
   public LocalDateTime accepted_date;
   public Integer accepted_answer_id;
-
+  public int user_count;
+  public int answer_user_count;
+  public int comment_user_count;
   public int not_public_will;
 
 }

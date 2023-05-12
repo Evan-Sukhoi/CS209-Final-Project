@@ -55,7 +55,8 @@ public class DemoController {
         return "TagsPage";
     }
     @GetMapping({ "/UsersPage"})
-    public String users() {
+    public String users(Model model) {
+        model.addAttribute("mostActiveUser", questionService.getMostActiveUsersTop());
         return "UsersPage";
     }
     @GetMapping({"/ApisPage"})

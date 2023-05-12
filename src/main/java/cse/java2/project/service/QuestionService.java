@@ -1,9 +1,7 @@
 package cse.java2.project.service;
 
 import com.google.gson.JsonObject;
-import cse.java2.project.model.HotApi;
-import cse.java2.project.model.Tags;
-import cse.java2.project.model.TagsJavaRelated;
+import cse.java2.project.model.*;
 import cse.java2.project.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -144,6 +142,47 @@ public class QuestionService {
   public String getMostFashionTop() {
     return "{" + getQuestionRepository().findByViews().get(0).name + "}";
   }
+  public Map<String, Long> getMostActiveUsers() {
+    List<Users> a = getQuestionRepository().findByUsersCount();
+    Map<String, Long> map = new HashMap<>();
+    for (int i = 0; i < 14; i++) {
+      map.put(a.get(i).display_name, (long) a.get(i).count);
+    }
+    return map;
+  }
+  public String getMostActiveUsersTop() {
+    return getQuestionRepository().findByUsersCount().get(0).display_name;
+  }
+  public Map<String, Long> getUsersDistribution() {
+    Map<String, Long> map = new HashMap<>();
+    map.put("0-9", getQuestionRepository().findByQuestionUsersCount(0, 9));
+    map.put("10-19", getQuestionRepository().findByQuestionUsersCount(10, 19));
+    map.put("20-29", getQuestionRepository().findByQuestionUsersCount(20, 29));
+    map.put("30-39", getQuestionRepository().findByQuestionUsersCount(30, 39));
+    map.put("40-49", getQuestionRepository().findByQuestionUsersCount(40, 49));
+    map.put("50-59", getQuestionRepository().findByQuestionUsersCount(50, 59));
+    map.put("above 60", getQuestionRepository().findByQuestionUsersCount(60));
+    return map;
+  }
+  public Map<String, Long> getUsersDistributionAnswer() {
+    Map<String, Long> map = new HashMap<>();
+    map.put("0-9", getQuestionRepository().findByQuestionAnswerUsersCount(0, 9));
+    map.put("10-19", getQuestionRepository().findByQuestionAnswerUsersCount(10, 19));
+    map.put("20-29", getQuestionRepository().findByQuestionAnswerUsersCount(20, 29));
+    map.put("30-39", getQuestionRepository().findByQuestionAnswerUsersCount(30, 39));
+    map.put("40-49", getQuestionRepository().findByQuestionAnswerUsersCount(40, 49));
+    map.put("50-59", getQuestionRepository().findByQuestionAnswerUsersCount(50, 59));
+    map.put("above 60", getQuestionRepository().findByQuestionAnswerUsersCount(60));
+    return map;
+  }
+  public Map<String, Long> getUsersDistributionComment() {
+    Map<String, Long> map = new HashMap<>();
+    map.put("0-5", getQuestionRepository().findByQuestionCommentUsersCount(0, 4));
+    map.put("6-10", getQuestionRepository().findByQuestionCommentUsersCount(5, 9));
+    map.put("11-15", getQuestionRepository().findByQuestionCommentUsersCount(10, 14));
+    map.put("above 15", getQuestionRepository().findByQuestionCommentUsersCount(15));
+    return map;
+  }
   public Map<String, Long> getMostHotApi() {
     List<HotApi> a = getQuestionRepository().findByApiCount();
     Map<String, Long> map = new HashMap<>();
@@ -163,6 +202,7 @@ public class QuestionService {
         jsonObject.get("name").getAsString(),
         jsonObject.get("age").getAsInt());
   }
+
 }
 
 

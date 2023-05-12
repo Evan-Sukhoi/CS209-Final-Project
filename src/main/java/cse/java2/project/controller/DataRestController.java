@@ -51,6 +51,22 @@ public class DataRestController {
     public Map<String, Long> getMostViews() {
         return questionService.getMostFashion();
     }
+    @GetMapping("/UsersPage/chart1")
+    public Map<String, Long> getUsersDistribution() {
+        return questionService.getUsersDistribution();
+    }
+    @GetMapping("/UsersPage/chart2")
+    public Map<String, Long> getUsersDistributionAnswer() {
+        return questionService.getUsersDistributionAnswer();
+    }
+    @GetMapping("/UsersPage/chart3")
+    public Map<String, Long> getUsersDistributionComment() {
+        return questionService.getUsersDistributionComment();
+    }
+    @GetMapping("/UsersPage/chart4")
+    public Map<String, Long> getMostActiveUser() {
+        return questionService.getMostActiveUsers();
+    }
     @GetMapping("/ApisPage/chart1")
     public Map<String, Long> getMostHotApi() {
         return questionService.getMostHotApi();
