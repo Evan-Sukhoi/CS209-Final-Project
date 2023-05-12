@@ -48,12 +48,19 @@ public class DemoController {
         return "AnswersPage";
     }
     @GetMapping({ "/TagsPage"})
-    public String tags() {
+    public String tags(Model model) {
+        model.addAttribute("mostRelateJava", questionService.getMostRelatedToJavaTop());
+        model.addAttribute("mostQuvotes", questionService.getBestTop());
+        model.addAttribute("mostViews", questionService.getMostFashionTop());
         return "TagsPage";
     }
     @GetMapping({ "/UsersPage"})
     public String users() {
         return "UsersPage";
     }
-
+    @GetMapping({"/ApisPage"})
+    public String apis(Model model) {
+        model.addAttribute("mostHotApi", questionService.getMostHotApiTop());
+        return "ApisPage";
+    }
 }

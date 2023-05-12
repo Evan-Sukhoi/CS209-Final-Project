@@ -51,4 +51,8 @@ public class DataRestController {
     public Map<String, Long> getMostViews() {
         return questionService.getMostFashion();
     }
+    @GetMapping("/ApisPage/chart1")
+    public Map<String, Long> getMostHotApi() {
+        return questionService.getMostHotApi();
+    }
 }

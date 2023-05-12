@@ -1,6 +1,7 @@
 package cse.java2.project.service;
 
 import com.google.gson.JsonObject;
+import cse.java2.project.model.HotApi;
 import cse.java2.project.model.Tags;
 import cse.java2.project.model.TagsJavaRelated;
 import cse.java2.project.repository.QuestionRepository;
@@ -112,14 +113,14 @@ public class QuestionService {
 
   public Map<String, Long> getMostRelatedToJava() {
     List<TagsJavaRelated> a = getQuestionRepository().findByCount();
-    Long total = getQuestionRepository().findTagRelatedToJavaSize();
     Map<String, Long> map = new HashMap<>();
     for (int i = 0; i < 14; i++) {
       map.put(a.get(i).name, (long) a.get(i).count);
-      total -= (long) a.get(i).count;
     }
-    map.put("others", total);
     return map;
+  }
+  public String getMostRelatedToJavaTop() {
+    return getQuestionRepository().findByCount().get(0).name;
   }
   public Map<String, Long> getBest() {
     List<Tags> a = getQuestionRepository().findByUpvotes();
@@ -129,6 +130,9 @@ public class QuestionService {
     }
     return map;
   }
+  public String getBestTop() {
+    return "{" + getQuestionRepository().findByUpvotes().get(0).name + "}";
+  }
   public Map<String, Long> getMostFashion() {
     List<Tags> a = getQuestionRepository().findByViews();
     Map<String, Long> map = new HashMap<>();
@@ -137,6 +141,21 @@ public class QuestionService {
     }
     return map;
   }
+  public String getMostFashionTop() {
+    return "{" + getQuestionRepository().findByViews().get(0).name + "}";
+  }
+  public Map<String, Long> getMostHotApi() {
+    List<HotApi> a = getQuestionRepository().findByApiCount();
+    Map<String, Long> map = new HashMap<>();
+    for (int i = 0; i < 14; i++) {
+      map.put(a.get(i).name, (long) a.get(i).count);
+    }
+    return map;
+  }
+  public String getMostHotApiTop() {
+    return "{" + getQuestionRepository().findByApiCount().get(0).name + "}";
+  }
+
   public void saveJsonObject(JsonObject jsonObject) {
     String sql = "INSERT INTO your_table_name (name, age) VALUES (?, ?)";
 

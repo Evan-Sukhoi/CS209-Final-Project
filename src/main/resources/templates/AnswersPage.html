@@ -61,6 +61,10 @@
       <a class="nav-link" href="UsersPage">
         <span>Users</span></a>
     </li>
+    <li class="nav-item">
+      <a class="nav-link" href="JavaApiPage">
+        <span>JavaApi</span></a>
+    </li>
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
@@ -131,63 +135,56 @@
               <!-- Card Body -->
               <div class="card-body">
                 <span>The percentage of questions that has no answers </span>
-                <span th:text="${noAnswersPer}" style="color: blue"></span>
+                <span th:text="${noAnswersPer}" style="color: blue"></span><br>
                 <div class="chart-pie pt-4 pb-2">
                   <canvas id="myPieChart"></canvas>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="row">
           <!-- Pie Chart -->
           <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
               <!-- Card Body -->
               <div class="card-body">
-                <span>The distribution of the number of answers </span>
+                <span>The distribution of the number of answers </span><br><br>
                 <div class="chart-pie pt-4 pb-2">
                   <canvas id="myPieChart1"></canvas>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <!-- Content Row -->
-        <div class="row">
           <!-- Pie Chart -->
           <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
               <!-- Card Body -->
               <div class="card-body">
-                <span>The percentage of having an accepted answer </span>
-                <span th:text="${acceptedAnswersPer} " style="color: blue"></span>
+                <span>The percentage of having an accepted answer : </span>
+                <span th:text="${acceptedAnswersPer} " style="color: blue"></span><br>
                 <div class="chart-pie pt-4 pb-2">
                   <canvas id="myPieChart2"></canvas>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="row">          <!-- Pie Chart -->
+          <!-- Pie Chart -->
           <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
               <!-- Card Body -->
               <div class="card-body">
-                <span>The distribution of the question resolution duration </span>
+                <span>The distribution of the question resolution duration : </span><br><br>
                 <div class="chart-pie pt-4 pb-2">
                   <canvas id="myPieChart3"></canvas>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="row">          <!-- Pie Chart -->
+          <!-- Pie Chart -->
           <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
               <!-- Card Body -->
               <div class="card-body">
-                <span>The percentage of questions have non-accepted answers that have received more upvotes than the accepted answers </span>
+                <span>The percentage of questions have non-accepted answers that have received more upvotes than the accepted answers : </span>
                 <span th:text="${answerNotWillPer}" style="color: blue"></span>
                 <div class="chart-pie pt-4 pb-2">
                   <canvas id="myPieChart4"></canvas>

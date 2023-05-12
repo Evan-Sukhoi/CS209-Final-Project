@@ -1,5 +1,6 @@
 package cse.java2.project.repository;
 
+import cse.java2.project.model.HotApi;
 import cse.java2.project.model.Questions;
 import cse.java2.project.model.Tags;
 import cse.java2.project.model.TagsJavaRelated;
@@ -40,4 +41,6 @@ public interface QuestionRepository extends JpaRepository<Questions, Long> {
     List<Tags> findByUpvotes();
     @Query("SELECT t FROM Tags t ORDER BY t.view_count DESC ")
     List<Tags> findByViews();
+    @Query("SELECT t FROM HotApi t ORDER BY t.count DESC ")
+    List<HotApi> findByApiCount();
 }
