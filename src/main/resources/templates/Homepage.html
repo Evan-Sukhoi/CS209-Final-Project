@@ -80,7 +80,7 @@
     <!-- End of Sidebar -->
 
     <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
+    <div id="content-wrapper" class="d-flex flex-column" style="align-content: center">
 
         <!-- Main Content -->
         <div id="content">
@@ -99,17 +99,20 @@
             <!-- Begin Page Content -->
 
             <!-- /.container-fluid -->
-            <form id="myForm" method="post">
-                <label for="category">Category:</label>
+            <form id="myForm" method="get">
+                <label for="category">Types:</label>
                 <select id="category" name="category">
-                    <option value="option1">Option 1</option>
-                    <option value="option2">Option 2</option>
-                    <option value="option3">Option 3</option>
+                    <option value="answers">answers</option>
+                    <option value="acceptedAnswers">acceptedAnswers</option>
+                    <option value="comments">comments</option>
+                    <option value="questions">questions</option>
+                    <option value="tags">tags</option>
                 </select>
 
-                <!-- 其他表单控件 -->
+                <label for="id">ID:</label>
+                <input type="text" id="id" name="id">
 
-                <button type="submit">Submit</button>
+                <button type="submit">Search</button>
             </form>
         </div>
         <!-- End of Main Content -->
@@ -128,29 +131,24 @@
     <i class="fas fa-angle-up"></i>
 </a>
 <script>
-    // 监听表单提交事件
     document.getElementById('myForm').addEventListener('submit', function(event) {
-        // 阻止表单默认提交行为
         event.preventDefault();
 
-        // 获取选择的选项值
         const category = document.getElementById('category').value;
-
-        // 根据选择的选项值设置目标地址
-        let action = '';
-        if (category === 'option1') {
-            action = '/submit';
-        } else if (category === 'option2') {
-            action = '/submit1';
-        } else if (category === 'option3') {
-            action = '/submit2';
+        const id = document.getElementById('id').value;
+        let url;
+        if (category === 'answers') {
+            url = '/api/java/answers?id=' + id;
+        } else if (category === 'acceptedAnswers') {
+            url = '/api/java/answers/accepted?id=' + id;
+        } else if (category === 'comments') {
+            url = '/api/java/comments?id=' + id;
+        } else if (category === 'questions') {
+            url = '/api/java/questions?id=' + id;
+        } else if (category === 'tags') {
+            url = '/api/java/tags';
         }
-
-        // 更新表单的 action 属性
-        document.getElementById('myForm').action = action;
-
-        // 提交表单
-        document.getElementById('myForm').submit();
+        window.location.href = url;
     });
 </script>
 
