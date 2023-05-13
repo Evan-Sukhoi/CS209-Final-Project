@@ -6000,6 +6000,12 @@ a.close.disabled {
   bottom: calc(-.5rem - 1px)
 }
 
+<!-- 在CSS中 -->
+ .tag-data {
+   font-family: Arial;
+   font-size: 40px;
+ }
+
 .bs-popover-auto[x-placement^=top] > .arrow::before, .bs-popover-top > .arrow::before {
   bottom: 0;
   border-width: .5rem .5rem 0;
@@ -11036,9 +11042,9 @@ form.user .custom-checkbox.small label {
 }
 
 form.user .form-control-user {
-  font-size: .8rem;
+  font-size: 1rem;
   border-radius: 10rem;
-  padding: 1.5rem 1rem
+  padding: .5rem 1rem;
 }
 
 form.user .btn-user {

@@ -7,7 +7,7 @@ import javax.persistence.Id;
 public class Answers {
 
   @Id
-  public Long answer_id;
-  public Long question_id;
+  public Integer answer_id;
+  public Integer question_id;
   public String body;
 }

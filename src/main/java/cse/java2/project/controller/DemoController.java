@@ -53,4 +53,14 @@ public class DemoController {
         model.addAttribute("mostHotApi", Services.getMostHotApiTop());
         return "ApisPage";
     }
+
+    @GetMapping({"/RESTfulAPI"})
+    public String restful(Model model) {
+        return "RESTfulAPI";
+    }
+
+    @GetMapping({"/demo"})
+    public String demo(Model model) {
+        return "demo";
+    }
 }

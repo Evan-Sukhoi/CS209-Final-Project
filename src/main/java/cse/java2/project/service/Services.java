@@ -111,7 +111,7 @@ public class Services {
   public Map<String, Long> getMostRelatedToJava() {
     List<TagsJavaRelated> a = getRepositories().findByCount();
     Map<String, Long> map = new HashMap<>();
-    for (int i = 0; i < 14; i++) {
+    for (int i = 0; i < 50; i++) {
       map.put(a.get(i).name, (long) a.get(i).count);
     }
     return map;
@@ -186,7 +186,7 @@ public class Services {
   public Map<String, Long> getMostHotApi() {
     List<HotApi> a = getRepositories().findByApiCount();
     Map<String, Long> map = new HashMap<>();
-    for (int i = 0; i < 14; i++) {
+    for (int i = 0; i < 45; i++) {
       map.put(a.get(i).name, (long) a.get(i).count);
     }
     return map;

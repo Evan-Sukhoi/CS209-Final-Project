@@ -2,22 +2,22 @@
 <html lang="en">
 <head>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-    <title>ApisPage</title>
+  <title>ApisPage</title>
 
-    <!-- Custom fonts for this template-->
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-            rel="stylesheet">
+  <!-- Custom fonts for this template-->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link
+      href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+      rel="stylesheet">
 
-    <!-- Custom styles for this template-->
-    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+  <!-- Custom styles for this template-->
+  <link href="css/sb-admin-2.min.css" rel="stylesheet">
 
 </head>
 
@@ -26,249 +26,263 @@
 <!-- Page Wrapper -->
 <div id="wrapper">
 
-    <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+  <!-- Sidebar -->
+  <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-        <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="Homepage">
-            <div class="sidebar-brand-icon rotate-n-15">
-                <i class="fas fa-laugh-wink"></i>
-            </div>
-            <div class="sidebar-brand-text mx-3">CS209AProject</div>
-        </a>
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="Homepage">
+      <div class="sidebar-brand-icon rotate-n-15">
+        <i class="fas fa-laugh-wink"></i>
+      </div>
+      <div class="sidebar-brand-text mx-3">CS209A Proj</div>
+    </a>
 
-        <!-- Divider -->
-        <hr class="sidebar-divider my-0">
+    <!-- Divider -->
+    <hr class="sidebar-divider">
 
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            Types
-        </div>
-
-        <li class="nav-item">
-            <a class="nav-link" href="AnswersPage">
-                <span>Answers</span></a>
-        </li>
-        <!-- Nav Item - Charts -->
-        <li class="nav-item">
-            <a class="nav-link" href="TagsPage">
-                <span>Tags</span></a>
-        </li>
-
-        <!-- Nav Item - Tables -->
-        <li class="nav-item">
-            <a class="nav-link" href="UsersPage">
-                <span>Users</span></a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="ApisPage">
-                <span>Apis</span></a>
-        </li>
-
-        <!-- Divider -->
-        <hr class="sidebar-divider d-none d-md-block">
-
-        <!-- Sidebar Toggler (Sidebar) -->
-        <div class="text-center d-none d-md-inline">
-            <button class="rounded-circle border-0" id="sidebarToggle"></button>
-        </div>
-    </ul>
-    <!-- End of Sidebar -->
-
-
-    <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
-
-        <!-- Main Content -->
-        <div id="content">
-
-            <!-- Topbar -->
-            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                <span>The Data about Tags</span>
-                <!-- Sidebar Toggle (Topbar) -->
-                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                    <i class="fa fa-bars"></i>
-                </button>
-
-            </nav>
-            <!-- End of Topbar -->
-
-            <!-- Begin Page Content -->
-            <div class="container-fluid">
-
-
-                <!-- Content Row -->
-                <!-- Pie Chart -->
-                <div class="card shadow mb-4">
-                    <div class="card-body">
-                        <span>The tags frequently appear together with the java tag :</span>
-                        <span th:text="${mostHotApi}" style="color: blue"></span>
-                        <div class="chart-bar">
-                            <canvas id="myBarChart1"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <!-- Pie Chart -->
-                <!-- Content Row -->
-                <!-- Pie Chart -->
-                <!-- Content Row -->
-                <div class="row">
-
-
-
-                </div>
-                <!-- End of Content Wrapper -->
-
-            </div>
-            <!-- End of Page Wrapper -->
-
-            <!-- Scroll to Top Button-->
-            <a class="scroll-to-top rounded" href="#page-top">
-                <i class="fas fa-angle-up"></i>
-            </a>
-
-        </div>
+    <!-- Heading -->
+    <div class="sidebar-heading">
+      Visual Data
     </div>
+
+    <li class="nav-item">
+      <a class="nav-link" href="AnswersPage">
+        <span>Answers</span></a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="TagsPage">
+        <span>Tags</span></a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="UsersPage">
+        <span>Users</span></a>
+    </li>
+
+    <li class="nav-item active">
+      <a class="nav-link" href="ApisPage">
+        <span>Apis</span></a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+      API
+    </div>
+
+    <li class="nav-item">
+      <a class="nav-link" href="RESTfulAPI">
+        <span>Documentation</span></a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+      <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+  </ul>
+  <!-- End of Sidebar -->
+
+
+  <!-- Content Wrapper -->
+  <div id="content-wrapper" class="d-flex flex-column">
+
+    <!-- Main Content -->
+    <div id="content">
+
+      <!-- Topbar -->
+      <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+        <span class="tag_data">The Data about Tags</span>
+      </nav>
+      <!-- End of Topbar -->
+
+      <!-- Begin Page Content -->
+      <div class="container-fluid">
+
+
+        <!-- Content Row -->
+        <!-- Pie Chart -->
+        <div class="card shadow mb-4">
+          <div class="card-body">
+            <span>The tags frequently appear together with the java tag :</span>
+            <span th:text="${mostHotApi}" style="color: blue"></span>
+            <div class="chart-bar">
+              <canvas id="myBarChart1"></canvas>
+            </div>
+          </div>
+        </div>
+        <!-- Pie Chart -->
+        <!-- Content Row -->
+        <!-- Pie Chart -->
+        <!-- Content Row -->
+        <div class="row">
+
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+      </div>
+      <!-- End of Page Wrapper -->
+
+      <!-- Scroll to Top Button-->
+      <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+      </a>
+
+    </div>
+  </div>
 </div>
-            <!-- Bootstrap core JavaScript-->
-            <script src="vendor/jquery/jquery.min.js"></script>
-            <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap core JavaScript-->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-            <!-- Core plugin JavaScript-->
-            <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+<!-- Core plugin JavaScript-->
+<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-            <!-- Custom scripts for all pages-->
-            <script src="js/sb-admin-2.min.js"></script>
+<!-- Custom scripts for all pages-->
+<script src="js/sb-admin-2.min.js"></script>
 
-            <!-- Page level plugins -->
-            <script src="vendor/chart.js/Chart.min.js"></script>
+<!-- Page level plugins -->
+<script src="vendor/chart.js/Chart.min.js"></script>
 
-            <!-- Page level custom scripts -->
-            <script>
-                function drawBarChart(path,chartId,max) {
-                    fetch(path)
-                        .then(response => response.json())
-                        .then(data => {
-                            const sortedLabels = Object.keys(data).sort(function(a, b) { return data[b] - data[a] });
-                            const sortedValues = sortedLabels.map(function(label) { return data[label]; });
+<!-- Page level custom scripts -->
+<script>
+  function drawBarChart(path, chartId, max) {
+    fetch(path)
+    .then(response => response.json())
+    .then(data => {
+      const sortedLabels = Object.keys(data).sort(function (a, b) {
+        return data[b] - data[a]
+      }).slice(0, 14);  // 只获取前14个元素
 
-                            function number_format(number, decimals, dec_point, thousands_sep) {
-                                // *     example: number_format(1234.56, 2, ',', ' ');
-                                // *     return: '1 234,56'
-                                number = (number + '').replace(',', '').replace(' ', '');
-                                var n = !isFinite(+number) ? 0 : +number,
-                                    prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-                                    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-                                    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
-                                    s = '',
-                                    toFixedFix = function(n, prec) {
-                                        var k = Math.pow(10, prec);
-                                        return '' + Math.round(n * k) / k;
-                                    };
-                                // Fix for IE parseFloat(0.55).toFixed(0) = 0;
-                                s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-                                if (s[0].length > 3) {
-                                    s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
-                                }
-                                if ((s[1] || '').length < prec) {
-                                    s[1] = s[1] || '';
-                                    s[1] += new Array(prec - s[1].length + 1).join('0');
-                                }
-                                return s.join(dec);
-                            }
+      const sortedValues = sortedLabels.map(function (label) {
+        return data[label];
+      });
 
-                            var ctx = document.getElementById(chartId);
-                            new Chart(ctx, {
-                                type: 'bar',
-                                data: {
-                                    labels: sortedLabels,
-                                    datasets: [{
-                                        label: "",
-                                        backgroundColor: "#4e73df",
-                                        hoverBackgroundColor: "#2e59d9",
-                                        borderColor: "#4e73df",
-                                        data: sortedValues,
-                                    }],
-                                },
-                                options: {
-                                    maintainAspectRatio: false,
-                                    layout: {
-                                        padding: {
-                                            left: 10,
-                                            right: 25,
-                                            top: 25,
-                                            bottom: 0
-                                        }
-                                    },
-                                    scales: {
-                                        xAxes: [{
-                                            time: {
-                                                unit: ''
-                                            },
-                                            gridLines: {
-                                                display: false,
-                                                drawBorder: false
-                                            },
-                                            ticks: {
-                                                maxTicksLimit: 15,
-                                                callback: function(value, index, values) {
-                                                    if (value.length > 15) {
-                                                        return value.slice(0, 15) + '...';
-                                                    } else {
-                                                        return value;
-                                                    }
-                                                }
-                                            },
-                                            maxBarThickness: 25,
-                                        }],
-                                        yAxes: [{
-                                            ticks: {
-                                                min: 0,
-                                                max: max,
-                                                maxTicksLimit: 10,
-                                                padding: 10,
-                                                // Include a dollar sign in the ticks
-                                                callback: function(value, index, values) {
-                                                    return number_format(value);
-                                                }
-                                            },
-                                            gridLines: {
-                                                color: "rgb(234, 236, 244)",
-                                                zeroLineColor: "rgb(234, 236, 244)",
-                                                drawBorder: false,
-                                                borderDash: [2],
-                                                zeroLineBorderDash: [2]
-                                            }
-                                        }],
-                                    },
-                                    legend: {
-                                        display: false
-                                    },
-                                    tooltips: {
-                                        titleMarginBottom: 10,
-                                        titleFontColor: '#6e707e',
-                                        titleFontSize: 14,
-                                        backgroundColor: "rgb(255,255,255)",
-                                        bodyFontColor: "#858796",
-                                        borderColor: '#dddfeb',
-                                        borderWidth: 1,
-                                        xPadding: 15,
-                                        yPadding: 15,
-                                        displayColors: false,
-                                        caretPadding: 10,
-                                        callbacks: {
-                                            label: function(tooltipItem, chart) {
-                                                var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                                                return datasetLabel + number_format(tooltipItem.yLabel);
-                                            }
-                                        }
-                                    },
-                                }
-                            });
-                        });
+      function number_format(number, decimals, dec_point, thousands_sep) {
+        // *     example: number_format(1234.56, 2, ',', ' ');
+        // *     return: '1 234,56'
+        number = (number + '').replace(',', '').replace(' ', '');
+        var n = !isFinite(+number) ? 0 : +number,
+            prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+            sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+            dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+            s = '',
+            toFixedFix = function (n, prec) {
+              var k = Math.pow(10, prec);
+              return '' + Math.round(n * k) / k;
+            };
+        // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+        s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+        if (s[0].length > 3) {
+          s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+        }
+        if ((s[1] || '').length < prec) {
+          s[1] = s[1] || '';
+          s[1] += new Array(prec - s[1].length + 1).join('0');
+        }
+        return s.join(dec);
+      }
+
+      var ctx = document.getElementById(chartId);
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: sortedLabels,
+          datasets: [{
+            label: "",
+            backgroundColor: "#4e73df",
+            hoverBackgroundColor: "#2e59d9",
+            borderColor: "#4e73df",
+            data: sortedValues,
+          }],
+        },
+        options: {
+          maintainAspectRatio: false,
+          layout: {
+            padding: {
+              left: 10,
+              right: 25,
+              top: 25,
+              bottom: 0
+            }
+          },
+          scales: {
+            xAxes: [{
+              time: {
+                unit: ''
+              },
+              gridLines: {
+                display: false,
+                drawBorder: false
+              },
+              ticks: {
+                maxTicksLimit: 15,
+                callback: function (value, index, values) {
+                  if (value.length > 15) {
+                    return value.slice(0, 15) + '...';
+                  } else {
+                    return value;
+                  }
                 }
-                drawBarChart('/api/ApisPage/chart1', 'myBarChart1',200);
-            </script>
+              },
+              maxBarThickness: 25,
+            }],
+            yAxes: [{
+              ticks: {
+                min: 0,
+                max: max,
+                maxTicksLimit: 10,
+                padding: 10,
+                // Include a dollar sign in the ticks
+                callback: function (value, index, values) {
+                  return number_format(value);
+                }
+              },
+              gridLines: {
+                color: "rgb(234, 236, 244)",
+                zeroLineColor: "rgb(234, 236, 244)",
+                drawBorder: false,
+                borderDash: [2],
+                zeroLineBorderDash: [2]
+              }
+            }],
+          },
+          legend: {
+            display: false
+          },
+          tooltips: {
+            titleMarginBottom: 10,
+            titleFontColor: '#6e707e',
+            titleFontSize: 14,
+            backgroundColor: "rgb(255,255,255)",
+            bodyFontColor: "#858796",
+            borderColor: '#dddfeb',
+            borderWidth: 1,
+            xPadding: 15,
+            yPadding: 15,
+            displayColors: false,
+            caretPadding: 10,
+            callbacks: {
+              label: function (tooltipItem, chart) {
+                var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                return datasetLabel + number_format(tooltipItem.yLabel);
+              }
+            }
+          },
+        }
+      });
+    });
+  }
+
+  drawBarChart('/api/ApisPage/chart1', 'myBarChart1', 200);
+</script>
 </body>
 
 </html>

@@ -35,39 +35,53 @@
       <div class="sidebar-brand-icon rotate-n-15">
         <i class="fas fa-laugh-wink"></i>
       </div>
-      <div class="sidebar-brand-text mx-3">Homepage</div>
+      <div class="sidebar-brand-text mx-3">CS209A Proj</div>
     </a>
 
     <!-- Divider -->
-    <hr class="sidebar-divider my-0">
+    <hr class="sidebar-divider">
 
     <!-- Heading -->
     <div class="sidebar-heading">
-      Types
+      Visual Data
     </div>
 
     <li class="nav-item">
       <a class="nav-link" href="AnswersPage">
         <span>Answers</span></a>
     </li>
-    <!-- Nav Item - Charts -->
-    <li class="nav-item">
+
+    <li class="nav-item active">
       <a class="nav-link" href="TagsPage">
         <span>Tags</span></a>
     </li>
 
-    <!-- Nav Item - Tables -->
     <li class="nav-item">
       <a class="nav-link" href="UsersPage">
         <span>Users</span></a>
     </li>
+
     <li class="nav-item">
-      <a class="nav-link" href="JavaApiPage">
-        <span>JavaApi</span></a>
+      <a class="nav-link" href="ApisPage">
+        <span>Apis</span></a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+      API
+    </div>
+
+    <li class="nav-item">
+      <a class="nav-link" href="RESTfulAPI">
+        <span>Documentation</span></a>
     </li>
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
+
 
     <!-- Sidebar Toggler (Sidebar) -->
     <div class="text-center d-none d-md-inline">
@@ -75,7 +89,6 @@
     </div>
   </ul>
   <!-- End of Sidebar -->
-
 
   <!-- Content Wrapper -->
   <div id="content-wrapper" class="d-flex flex-column">
@@ -160,127 +173,130 @@
 
       <!-- Page level custom scripts -->
       <script>
-        function drawBarChart(path,chartId,max) {
+        function drawBarChart(path, chartId, max) {
           fetch(path)
-                  .then(response => response.json())
-                  .then(data => {
-                    const sortedLabels = Object.keys(data).sort(function(a, b) { return data[b] - data[a] });
-                    const sortedValues = sortedLabels.map(function(label) { return data[label]; });
+          .then(response => response.json())
+          .then(data => {
+            const sortedLabels = Object.keys(data).sort(function (a, b) {
+              return data[b] - data[a]
+            }).slice(0, 14);  // 只获取前14个元素
 
-                    function number_format(number, decimals, dec_point, thousands_sep) {
-                      // *     example: number_format(1234.56, 2, ',', ' ');
-                      // *     return: '1 234,56'
-                      number = (number + '').replace(',', '').replace(' ', '');
-                      var n = !isFinite(+number) ? 0 : +number,
-                              prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-                              sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-                              dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
-                              s = '',
-                              toFixedFix = function(n, prec) {
-                                var k = Math.pow(10, prec);
-                                return '' + Math.round(n * k) / k;
-                              };
-                      // Fix for IE parseFloat(0.55).toFixed(0) = 0;
-                      s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-                      if (s[0].length > 3) {
-                        s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            const sortedValues = sortedLabels.map(function (label) {
+              return data[label];
+            });
+
+            function number_format(number, decimals, dec_point, thousands_sep) {
+              number = (number + '').replace(',', '').replace(' ', '');
+              var n = !isFinite(+number) ? 0 : +number,
+                  prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                  sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                  dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                  s = '',
+                  toFixedFix = function (n, prec) {
+                    var k = Math.pow(10, prec);
+                    return '' + Math.round(n * k) / k;
+                  };
+              // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+              s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+              if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+              }
+              if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1).join('0');
+              }
+              return s.join(dec);
+            }
+
+            var ctx = document.getElementById(chartId);
+            new Chart(ctx, {
+              type: 'bar',
+              data: {
+                labels: sortedLabels,
+                datasets: [{
+                  label: "",
+                  backgroundColor: "#4e73df",
+                  hoverBackgroundColor: "#2e59d9",
+                  borderColor: "#4e73df",
+                  data: sortedValues,
+                }],
+              },
+              options: {
+                maintainAspectRatio: false,
+                layout: {
+                  padding: {
+                    left: 10,
+                    right: 25,
+                    top: 25,
+                    bottom: 0
+                  }
+                },
+                scales: {
+                  xAxes: [{
+                    time: {
+                      unit: ''
+                    },
+                    gridLines: {
+                      display: false,
+                      drawBorder: false
+                    },
+                    ticks: {
+                      maxTicksLimit: 15,
+                      callback: function (value, index, values) {
+                        if (value.length > 15) {
+                          return value.slice(0, 15) + '...';
+                        } else {
+                          return value;
+                        }
                       }
-                      if ((s[1] || '').length < prec) {
-                        s[1] = s[1] || '';
-                        s[1] += new Array(prec - s[1].length + 1).join('0');
+                    },
+                    maxBarThickness: 25,
+                  }],
+                  yAxes: [{
+                    ticks: {
+                      min: 0,
+                      max: max,
+                      maxTicksLimit: 10,
+                      padding: 10,
+                      // Include a dollar sign in the ticks
+                      callback: function (value, index, values) {
+                        return number_format(value);
                       }
-                      return s.join(dec);
+                    },
+                    gridLines: {
+                      color: "rgb(234, 236, 244)",
+                      zeroLineColor: "rgb(234, 236, 244)",
+                      drawBorder: false,
+                      borderDash: [2],
+                      zeroLineBorderDash: [2]
                     }
-
-                    var ctx = document.getElementById(chartId);
-                    new Chart(ctx, {
-                      type: 'bar',
-                      data: {
-                        labels: sortedLabels,
-                        datasets: [{
-                          label: "",
-                          backgroundColor: "#4e73df",
-                          hoverBackgroundColor: "#2e59d9",
-                          borderColor: "#4e73df",
-                          data: sortedValues,
-                        }],
-                      },
-                      options: {
-                        maintainAspectRatio: false,
-                        layout: {
-                          padding: {
-                            left: 10,
-                            right: 25,
-                            top: 25,
-                            bottom: 0
-                          }
-                        },
-                        scales: {
-                          xAxes: [{
-                            time: {
-                              unit: ''
-                            },
-                            gridLines: {
-                              display: false,
-                              drawBorder: false
-                            },
-                            ticks: {
-                              maxTicksLimit: 15,
-                              callback: function(value, index, values) {
-                                if (value.length > 15) {
-                                  return value.slice(0, 15) + '...';
-                                } else {
-                                  return value;
-                                }
-                              }
-                            },
-                            maxBarThickness: 25,
-                          }],
-                          yAxes: [{
-                            ticks: {
-                              min: 0,
-                              max: max,
-                              maxTicksLimit: 10,
-                              padding: 10,
-                              // Include a dollar sign in the ticks
-                              callback: function(value, index, values) {
-                                return number_format(value);
-                              }
-                            },
-                            gridLines: {
-                              color: "rgb(234, 236, 244)",
-                              zeroLineColor: "rgb(234, 236, 244)",
-                              drawBorder: false,
-                              borderDash: [2],
-                              zeroLineBorderDash: [2]
-                            }
-                          }],
-                        },
-                        legend: {
-                          display: false
-                        },
-                        tooltips: {
-                          titleMarginBottom: 10,
-                          titleFontColor: '#6e707e',
-                          titleFontSize: 14,
-                          backgroundColor: "rgb(255,255,255)",
-                          bodyFontColor: "#858796",
-                          borderColor: '#dddfeb',
-                          borderWidth: 1,
-                          xPadding: 15,
-                          yPadding: 15,
-                          displayColors: false,
-                          caretPadding: 10,
-                          callbacks: {
-                            label: function(tooltipItem, chart) {
-                              var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                              return datasetLabel + number_format(tooltipItem.yLabel);
-                            }
-                          }
-                        },
-                      }
-                    });
-                  });
+                  }],
+                },
+                legend: {
+                  display: false
+                },
+                tooltips: {
+                  titleMarginBottom: 10,
+                  titleFontColor: '#6e707e',
+                  titleFontSize: 14,
+                  backgroundColor: "rgb(255,255,255)",
+                  bodyFontColor: "#858796",
+                  borderColor: '#dddfeb',
+                  borderWidth: 1,
+                  xPadding: 15,
+                  yPadding: 15,
+                  displayColors: false,
+                  caretPadding: 10,
+                  callbacks: {
+                    label: function (tooltipItem, chart) {
+                      var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                      return datasetLabel + number_format(tooltipItem.yLabel);
+                    }
+                  }
+                },
+              }
+            });
+          });
         }
 
         // 在此处调用drawPieChart()函数

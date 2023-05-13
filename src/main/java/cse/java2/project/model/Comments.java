@@ -7,8 +7,8 @@ import javax.persistence.Id;
 public class Comments {
 
   @Id
-  public Long comment_id;
-  public Long question_id;
+  public Integer comment_id;
+  public Integer question_id;
   public String body;
 
 }
