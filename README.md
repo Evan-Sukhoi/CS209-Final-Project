@@ -20,15 +20,21 @@ tags表记录了所有thread中的tags和tags组合，统计了它们的浏览�
 
 ![image-20230512223341935](C:\Users\HUAWEI\AppData\Roaming\Typora\typora-user-images\image-20230512223341935.png)
 
+部分数据库内容展示：
+
+![image-20230513000214622](C:\Users\HUAWEI\AppData\Roaming\Typora\typora-user-images\image-20230513000214622.png)
 
 
 
 
 
+### Part 2 项目架构结构设计
 
-###Part 2 项目架构结构设计
+
 
 ### Part 3 成果与代码片段展示
+
+
 
 ### Part 4 总结分析
 

@@ -1,11 +1,16 @@
 package cse.java2.project.service;
 
+import cse.java2.project.model.Answers;
+import cse.java2.project.model.Comments;
 import cse.java2.project.model.HotApi;
+import cse.java2.project.model.Questions;
 import cse.java2.project.model.Tags;
 import cse.java2.project.model.TagsJavaRelated;
 import cse.java2.project.model.Users;
 import cse.java2.project.repository.Repositories;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -129,6 +134,7 @@ public class Services {
   public String getBestTop() {
     return "{" + getRepositories().findByUpvotes().get(0).name + "}";
   }
+
   public Map<String, Long> getMostFashion() {
     List<Tags> a = getRepositories().findByViews();
     Map<String, Long> map = new HashMap<>();
@@ -191,6 +197,45 @@ public class Services {
   }
   public String getMostHotApiTop() {
     return "{" + getRepositories().findByApiCount().get(0).name + "}";
+  }
+
+  /**
+   * The following methods are for RESTful API
+   */
+  public List<Answers> getAllAnswers() {
+    return getRepositories().findAllAnswers();
+  }
+
+  public List<Answers> getAnswersByQuestion_id(Integer question_id) {
+    return getRepositories().findAnswersByQuestion_id(question_id);
+  }
+
+  public List<Answers> getAllAcceptedAnswers() {
+    return getRepositories().findAllAcceptedAnswers();
+  }
+
+  public List<Answers> getAcceptedAnswersByQuestionId(Integer question_id) {
+    return getRepositories().findAcceptedAnswersByQuestionId(question_id);
+  }
+
+  public List<Comments> getAllComments() {
+    return getRepositories().findAllComments();
+  }
+
+  public List<Comments> getCommentsByQuestion_id(Integer question_id) {
+    return getRepositories().findCommentsByQuestion_id(question_id);
+  }
+
+  public List<Questions> getAllQuestions() {
+    return getRepositories().findAllQuestions();
+  }
+
+  public List<Questions> getQuestionsByQuestion_id(Integer question_id) {
+    return getRepositories().findQuestionsByQuestion_id(question_id);
+  }
+
+  public List<TagsJavaRelated> getAllTagsJavaRelated() {
+    return getRepositories().findAllTagsJavaRelated();
   }
 
 }
