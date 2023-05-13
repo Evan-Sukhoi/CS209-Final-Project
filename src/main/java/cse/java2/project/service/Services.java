@@ -24,6 +24,7 @@ import java.util.Map;
  */
 @Service
 public class Services {
+
   private final Repositories Repositories;
 
   @Autowired
@@ -47,18 +48,22 @@ public class Services {
     map.put(">=60", getRepositories().findByAnswer_countRange(60));
     return map;
   }
+
   public double getAnswerCountAverage() {
     return getRepositories().findByAnswer_countAverage();
   }
+
   public double getAnswerCountMax() {
     return getRepositories().findByAnswer_countMax();
   }
+
   public String getNoAnswersPercentage() {
     NumberFormat percentFormat = NumberFormat.getPercentInstance();
     percentFormat.setMaximumFractionDigits(4);
     return percentFormat.format((double)
-            getRepositories().findByAnswer_countRange(0, 0) / getRepositories().findTheQuestionsSize());
+        getRepositories().findByAnswer_countRange(0, 0) / getRepositories().findTheQuestionsSize());
   }
+
   public Map<String, Long> getNoAnswers() {
     Map<String, Long> map = new HashMap<>();
     Long total = getRepositories().findTheQuestionsSize();
@@ -67,12 +72,14 @@ public class Services {
     map.put("Not having", a);
     return map;
   }
+
   public String getHavingAcceptedAnswerPercentage() {
     NumberFormat percentFormat = NumberFormat.getPercentInstance();
     percentFormat.setMaximumFractionDigits(4);
-    return percentFormat.format( (double)
-            getRepositories().findByHavingAcceptedAnswers() / getRepositories().findTheQuestionsSize());
+    return percentFormat.format((double)
+        getRepositories().findByHavingAcceptedAnswers() / getRepositories().findTheQuestionsSize());
   }
+
   public Map<String, Long> getHavingAcceptedAnswers() {
     Map<String, Long> map = new HashMap<>();
     Long total = getRepositories().findTheQuestionsSize();
@@ -81,6 +88,7 @@ public class Services {
     map.put("Not having", total - a);
     return map;
   }
+
   public Map<String, Long> getResolutionDurationDistribution() {
     Map<String, Long> map = new HashMap<>();
     map.put("within 1 hours", getRepositories().findByResolutionTimeRange(0, 1));
@@ -89,14 +97,16 @@ public class Services {
     map.put("6-12 hours", getRepositories().findByResolutionTimeRange(6, 12));
     map.put("12-24 hours", getRepositories().findByResolutionTimeRange(12, 24));
     map.put("above 24 hours", getRepositories().findByResolutionTimeRange(24));
-    map.put("Not solved", getRepositories().findTheQuestionsSize() - getRepositories().findByHavingAcceptedAnswers());
+    map.put("Not solved",
+        getRepositories().findTheQuestionsSize() - getRepositories().findByHavingAcceptedAnswers());
     return map;
   }
+
   public String getNotWillPercentage() {
     NumberFormat percentFormat = NumberFormat.getPercentInstance();
     percentFormat.setMaximumFractionDigits(4);
-    return percentFormat.format( (double)
-            getRepositories().findByNot_public_will() / getRepositories().findTheQuestionsSize());
+    return percentFormat.format((double)
+        getRepositories().findByNot_public_will() / getRepositories().findTheQuestionsSize());
   }
 
   public Map<String, Long> getNotWill() {
@@ -116,9 +126,11 @@ public class Services {
     }
     return map;
   }
+
   public String getMostRelatedToJavaTop() {
     return getRepositories().findByCount().get(0).name;
   }
+
   public Map<String, Long> getBest() {
     List<Tags> a = getRepositories().findByUpvotes();
     Map<String, Long> map = new HashMap<>();
@@ -127,6 +139,7 @@ public class Services {
     }
     return map;
   }
+
   public String getBestTop() {
     return "{" + getRepositories().findByUpvotes().get(0).name + "}";
   }
@@ -139,9 +152,11 @@ public class Services {
     }
     return map;
   }
+
   public String getMostFashionTop() {
     return "{" + getRepositories().findByViews().get(0).name + "}";
   }
+
   public Map<String, Long> getMostActiveUsers() {
     List<Users> a = getRepositories().findByUsersCount();
     Map<String, Long> map = new HashMap<>();
@@ -150,9 +165,11 @@ public class Services {
     }
     return map;
   }
+
   public String getMostActiveUsersTop() {
     return getRepositories().findByUsersCount().get(0).display_name;
   }
+
   public Map<String, Long> getUsersDistribution() {
     Map<String, Long> map = new HashMap<>();
     map.put("0-9", getRepositories().findByQuestionUsersCount(0, 9));
@@ -164,6 +181,7 @@ public class Services {
     map.put("above 60", getRepositories().findByQuestionUsersCount(60));
     return map;
   }
+
   public Map<String, Long> getUsersDistributionAnswer() {
     Map<String, Long> map = new HashMap<>();
     map.put("0-9", getRepositories().findByQuestionAnswerUsersCount(0, 9));
@@ -175,6 +193,7 @@ public class Services {
     map.put("above 60", getRepositories().findByQuestionAnswerUsersCount(60));
     return map;
   }
+
   public Map<String, Long> getUsersDistributionComment() {
     Map<String, Long> map = new HashMap<>();
     map.put("0-5", getRepositories().findByQuestionCommentUsersCount(0, 4));
@@ -183,6 +202,7 @@ public class Services {
     map.put("above 15", getRepositories().findByQuestionCommentUsersCount(15));
     return map;
   }
+
   public Map<String, Long> getMostHotApi() {
     List<HotApi> a = getRepositories().findByApiCount();
     Map<String, Long> map = new HashMap<>();
@@ -191,6 +211,7 @@ public class Services {
     }
     return map;
   }
+
   public String getMostHotApiTop() {
     return "{" + getRepositories().findByApiCount().get(0).name + "}";
   }

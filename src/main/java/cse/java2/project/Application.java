@@ -6,13 +6,12 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
- * This is the main class of the Spring Boot application.
- * mvn spring-boot:run
+ * This is the main class of the Spring Boot application. mvn spring-boot:run
  */
 @SpringBootApplication
 public class Application {
 
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(Application.class, args);
+  }
 }

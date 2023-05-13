@@ -53,12 +53,12 @@ public class addData {
     String sql2 = "INSERT INTO comments (comment_id, question_id, body) VALUES (?, ?, ?) ";
     String sql3 = "Update questions SET body = ? WHERE question_id = ?";
 
-    try(
+    try (
         Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
         PreparedStatement pstmt1 = conn.prepareStatement(sql1);
         PreparedStatement pstmt2 = conn.prepareStatement(sql2);
         PreparedStatement pstmt3 = conn.prepareStatement(sql3);
-        ) {
+    ) {
       for (Integer questionId : questionIds) {
         StackOverflowApi api = new StackOverflowApi();
         Map<String, String> params = new HashMap<>();
@@ -108,12 +108,12 @@ public class addData {
         + "ON DUPLICATE KEY UPDATE count = count + ?;";
 
     try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-        PreparedStatement pstmt = conn.prepareStatement(sql);){
+        PreparedStatement pstmt = conn.prepareStatement(sql);) {
 
       for (JsonObject tag : tags) {
         String tagCombination = tag.get("name").getAsString();
 
-        List<String> tagList = Arrays.asList(tagCombination.split("," ));
+        List<String> tagList = Arrays.asList(tagCombination.split(","));
 
         if (tagList.size() != 1 && tagList.contains("java")) {
           tagList.remove("java");
@@ -134,13 +134,11 @@ public class addData {
   }
 
 
-
   private static void addTags() {
     List<JsonObject> tags = getAllTags();
 
     String sql = "INSERT INTO tags (name, score, view_count, count) VALUES (?, ?, ?, 1) "
         + "ON DUPLICATE KEY UPDATE count = count + 1, score = score + ?, view_count = view_count + ?;";
-
 
     try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
         PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -239,7 +237,6 @@ public class addData {
         }
       }
 
-
       List<Integer> distinctIDs = userIdsAnswer.stream().distinct().toList(); // 去重后的List
       List<Integer> distinctIDs2 = userIdsComment.stream().distinct().toList(); // 去重后的List
       int user_count = distinctIDs.size() + distinctIDs2.size() + 1; // 加上提问者
@@ -248,7 +245,8 @@ public class addData {
     }
   }
 
-  private static void insertUserCount(int questionId, int userCount, int answerCount, int commentCount) {
+  private static void insertUserCount(int questionId, int userCount, int answerCount,
+      int commentCount) {
     String sql = "UPDATE questions SET comment_user_count = ?, answer_user_count = ?, user_count = ? WHERE question_id = ?;";
     try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
         PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -315,8 +313,9 @@ public class addData {
     for (int questionId : questionIds) {
       // 调用queryQuestion方法，获取问题的信息
       JsonObject question;
-      try{ question = queryQuestion(questionId, api);}
-      catch (Exception e){
+      try {
+        question = queryQuestion(questionId, api);
+      } catch (Exception e) {
         e.printStackTrace();
         continue;
       }
@@ -327,15 +326,13 @@ public class addData {
       int score = question.get("score").getAsInt();
       int viewCount = question.get("view_count").getAsInt();
 
-
-
-
       // 更新数据库中的数据
       updateTagsInDatabase(questionId, tagsString, score, viewCount);
     }
   }
 
-  private static void updateTagsInDatabase(int questionId, String tagsString, int score, int viewCount) {
+  private static void updateTagsInDatabase(int questionId, String tagsString, int score,
+      int viewCount) {
     String sql = "UPDATE questions SET tags = ?, score = ?, view_count = ? WHERE question_id = ?";
 
     try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);

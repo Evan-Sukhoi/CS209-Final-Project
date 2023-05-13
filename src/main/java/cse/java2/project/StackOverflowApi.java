@@ -30,7 +30,7 @@ public class StackOverflowApi {
           int questionId = Integer.parseInt(params.get("ids"));
           params.remove("ids"); // 删除params中的ids参数
           urlPath = String.format("/questions/%d", questionId); // 将id插入到URL路径中
-        }else {
+        } else {
           urlPath = "/questions";
         }
         url = HttpUrl.parse(API_BASE_URL + urlPath)

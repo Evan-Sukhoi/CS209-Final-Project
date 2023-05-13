@@ -7,11 +7,12 @@ import javax.persistence.Id;
 
 @Entity
 public class Tags {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public
-    String name;
-    public int score;
-    public int view_count;
-    public int count;
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  public
+  String name;
+  public int score;
+  public int view_count;
+  public int count;
 }

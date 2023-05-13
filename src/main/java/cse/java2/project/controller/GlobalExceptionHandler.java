@@ -11,7 +11,8 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(value = Exception.class)
   public ResponseEntity<Object> handleException(Exception e) {
-    return new ResponseEntity<>("Something went wrong: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    return new ResponseEntity<>("Something went wrong: " + e.getMessage(),
+        HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
