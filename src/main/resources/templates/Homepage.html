@@ -99,7 +99,18 @@
             <!-- Begin Page Content -->
 
             <!-- /.container-fluid -->
+            <form id="myForm" method="post">
+                <label for="category">Category:</label>
+                <select id="category" name="category">
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                </select>
 
+                <!-- 其他表单控件 -->
+
+                <button type="submit">Submit</button>
+            </form>
         </div>
         <!-- End of Main Content -->
 
@@ -116,7 +127,32 @@
 <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
 </a>
+<script>
+    // 监听表单提交事件
+    document.getElementById('myForm').addEventListener('submit', function(event) {
+        // 阻止表单默认提交行为
+        event.preventDefault();
 
+        // 获取选择的选项值
+        const category = document.getElementById('category').value;
+
+        // 根据选择的选项值设置目标地址
+        let action = '';
+        if (category === 'option1') {
+            action = '/submit';
+        } else if (category === 'option2') {
+            action = '/submit1';
+        } else if (category === 'option3') {
+            action = '/submit2';
+        }
+
+        // 更新表单的 action 属性
+        document.getElementById('myForm').action = action;
+
+        // 提交表单
+        document.getElementById('myForm').submit();
+    });
+</script>
 
 <!-- Bootstrap core JavaScript-->
 <script src="vendor/jquery/jquery.min.js"></script>

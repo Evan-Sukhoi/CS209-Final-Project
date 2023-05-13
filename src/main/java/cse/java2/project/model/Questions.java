@@ -22,6 +22,6 @@ public class Questions {
   public int user_count;
   public int answer_user_count;
   public int comment_user_count;
-  public int not_public_will;
+  public Integer not_public_will;
 
 }

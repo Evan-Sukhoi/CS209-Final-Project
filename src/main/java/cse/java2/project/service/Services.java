@@ -25,10 +25,6 @@ import java.util.Map;
 @Service
 public class Services {
   private final Repositories Repositories;
-/*  private final TagsJavaRelatedRepository;*/
-
-  @Autowired
-  private JdbcTemplate jdbcTemplate;
 
   @Autowired
   public Services(Repositories Repositories) {

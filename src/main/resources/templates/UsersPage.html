@@ -207,51 +207,6 @@
             });
   }
   function drawBarChart(path,chartId,max) {
-    const customLabelPlugin = {
-      afterDraw: function(chart) {
-        const ctx = chart.ctx;
-        const chartArea = chart.chartArea;
-        const datasets = chart.data.datasets;
-        const labels = chart.data.labels;
-
-        ctx.save();
-
-        // 设置标签样式
-        ctx.fillStyle = '#000';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.font = '12px Arial';
-
-        // 在鼠标悬停时显示完整的标签
-        chartArea.height = chartArea.height - 20; // 减去底部标签的高度
-        datasets.forEach(dataset => {
-          const meta = dataset._meta[Object.keys(dataset._meta)[0]];
-          const bars = meta.data;
-
-          bars.forEach((bar, index) => {
-            const label = labels[index];
-            const x = bar._model.x;
-            const y = bar._model.y - 10; // 调整标签位置
-
-            // 完整显示标签
-            ctx.fillText(label, x, y);
-          });
-        });
-
-        // 在底部显示截断的标签
-        labels.forEach((label, index) => {
-          const x = chartArea.left + (index * (chartArea.width / labels.length)) + ((chartArea.width / labels.length) / 2);
-          const y = chartArea.bottom + 10;
-
-          // 截断过长的标签并添加省略号
-          let MAX_LABEL_LENGTH = 15;
-          const truncatedLabel = label.length > MAX_LABEL_LENGTH ? label.slice(0, MAX_LABEL_LENGTH) + '...' : label;
-          ctx.fillText(truncatedLabel, x, y);
-        });
-
-        ctx.restore();
-      }
-    };
     fetch(path)
             .then(response => response.json())
             .then(data => {
@@ -323,6 +278,7 @@
                           } else {
                             return value;
                           }
+                        }
                       },
                       maxBarThickness: 25,
                     }],
@@ -345,9 +301,6 @@
                         zeroLineBorderDash: [2]
                       }
                     }],
-                  },
-                  plugins: {
-                    customLabelPlugin: customLabelPlugin // 添加自定义插件
                   },
                   legend: {
                     display: false

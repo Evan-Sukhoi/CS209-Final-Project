@@ -1,16 +1,11 @@
 package cse.java2.project.controller;
 
-import cse.java2.project.model.Questions;
 import cse.java2.project.service.Services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.NumberFormat;
-import java.util.List;
 
 
 @Controller
