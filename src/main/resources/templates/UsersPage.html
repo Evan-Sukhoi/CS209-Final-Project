@@ -316,7 +316,13 @@
                         drawBorder: false
                       },
                       ticks: {
-                        maxTicksLimit: 15
+                        maxTicksLimit: 15,
+                        callback: function(value, index, values) {
+                          if (value.length > 15) {
+                            return value.slice(0, 15) + '...';
+                          } else {
+                            return value;
+                          }
                       },
                       maxBarThickness: 25,
                     }],
