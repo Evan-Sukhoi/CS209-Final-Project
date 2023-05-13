@@ -82,15 +82,17 @@ public class DataRestController {
      * The following methods are for RESTful API
      */
 
+
     @GetMapping("/java/answers")
-    public List<Answers> getAllAnswers() {
-        return Services.getAllAnswers();
+    public List<Answers> getAllAnswers(@RequestParam(required = false) Integer id) {
+        if (id == null) {
+            return Services.getAllAnswers();
+        } else {
+            return Services.getAnswersByQuestion_id(id);
+        }
     }
 
-    @GetMapping("/java/answers/")
-    public List<Answers> getAnswersByQuestion_id(@RequestParam("id") Integer question_id) {
-        return Services.getAnswersByQuestion_id(question_id);
-    }
+
     @GetMapping("/java/answers/accepted")
     public List<Answers> getAllAcceptedAnswers(@RequestParam(required = false) Integer id) {
         if (id == null) {
@@ -101,26 +103,24 @@ public class DataRestController {
     }
 
     @GetMapping("/java/comments")
-    public List<Comments> getAllComments() {
-        return Services.getAllComments();
-    }
-
-    @GetMapping("/java/comments/")
-    public List<Comments> getCommentsByQuestion_id(@RequestParam("id") Integer question_id) {
-        return Services.getCommentsByQuestion_id(question_id);
-    }
-
-    @GetMapping("/java/questions/")
-    public List<Questions> getAllQuestions() {
-        return Services.getAllQuestions();
+    public List<Comments> getAllComments(@RequestParam(required = false) Integer id) {
+        if (id == null) {
+            return Services.getAllComments();
+        } else {
+            return Services.getCommentsByQuestion_id(id);
+        }
     }
 
     @GetMapping("/java/questions")
-    public List<Questions> getQuestionsByQuestion_id(@RequestParam("id") Integer question_id) {
-        return Services.getQuestionsByQuestion_id(question_id);
+    public List<Questions> getAllQuestions(@RequestParam(required = false) Integer id) {
+        if (id == null) {
+            return Services.getAllQuestions();
+        } else {
+            return Services.getQuestionsByQuestion_id(id);
+        }
     }
 
-    @GetMapping("/java/tags/")
+    @GetMapping("/java/tags")
     public List<TagsJavaRelated> getAllTagsJavaRelated() {
         return Services.getAllTagsJavaRelated();
     }
