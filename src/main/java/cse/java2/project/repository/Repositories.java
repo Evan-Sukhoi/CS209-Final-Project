@@ -15,6 +15,9 @@ public interface Repositories extends JpaRepository<Questions, Long> {
   @Query("SELECT count(*) FROM Questions where answer_count <= :max and answer_count >= :min")
   Long findByAnswer_countRange(@Param("min") int min, @Param("max") int max);
 
+  @Query("SELECT answer_count FROM Questions")
+  List<Integer> findAllAnswer_count();
+
   @Query("SELECT count(*) FROM Questions where answer_count >= :min")
   Long findByAnswer_countRange(@Param("min") int min);
 

@@ -39,6 +39,8 @@ public class DemoController {
     return "AnswersPage";
   }
 
+
+
   @GetMapping({"/TagsPage"})
   public String tags(Model model) {
     model.addAttribute("mostRelateJava", Services.getMostRelatedToJavaTop());

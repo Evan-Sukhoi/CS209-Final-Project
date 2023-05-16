@@ -49,6 +49,10 @@ public class Services {
     return map;
   }
 
+  public List<Integer> getAnswers() {
+    return getRepositories().findAllAnswer_count();
+  }
+
   public double getAnswerCountAverage() {
     return getRepositories().findByAnswer_countAverage();
   }

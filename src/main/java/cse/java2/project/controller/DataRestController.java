@@ -36,6 +36,16 @@ public class DataRestController {
     return Services.getResolutionDurationDistribution();
   }
 
+
+//    public List<Integer> getAnswers() {
+//      return getRepositories().findAllAnswer_count();
+//    }
+
+  @GetMapping("/AnswersPage/answer_count")
+  public List<Integer> getAnswers() {
+    return Services.getAnswers();
+  }
+
   @GetMapping("/AnswersPage/Percentage1")
   public Map<String, Long> getNoAnswersPercentage() {
     return Services.getNoAnswers();
@@ -94,7 +104,6 @@ public class DataRestController {
   /**
    * The following methods are for RESTful API
    */
-
 
   @GetMapping("/java/answers")
   public List<Answers> getAllAnswers(@RequestParam(required = false) Integer id) {
