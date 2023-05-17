@@ -14,11 +14,12 @@
   <!-- Custom fonts for this template-->
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link
-          href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-          rel="stylesheet">
+      href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+      rel="stylesheet">
 
   <!-- Custom styles for this template-->
   <link href="css/sb-admin-2.min.css" rel="stylesheet">
+  <script src="https://fastly.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
 
 </head>
 
@@ -117,9 +118,7 @@
               <!-- Card Body -->
               <div class="card-body">
                 <span>The distribution of Users participation : </span><br><br>
-                <div class="chart-pie pt-4 pb-2">
-                  <canvas id="myPieChart1"></canvas>
-                </div>
+                <div id="myPieChart1"></div>
               </div>
             </div>
           </div>
@@ -128,10 +127,8 @@
             <div class="card shadow mb-4">
               <!-- Card Body -->
               <div class="card-body">
-                <span>The distribution of users participation in the answer aspect : </span><br>
-                <div class="chart-pie pt-4 pb-2">
-                  <canvas id="myPieChart2"></canvas>
-                </div>
+                <span>The distribution of users participation in the answer aspect : </span>
+                <div id="myPieChart2"></div>
               </div>
             </div>
           </div>
@@ -141,14 +138,12 @@
               <!-- Card Body -->
               <div class="card-body">
                 <span>The distribution of users participation in the comment aspect : </span>
-                <div class="chart-pie pt-4 pb-2">
-                  <canvas id="myPieChart3"></canvas>
-                </div>
+                <div id="myPieChart3"></div>
               </div>
             </div>
           </div>
-        <!-- End of Content Wrapper -->
-      </div>
+          <!-- End of Content Wrapper -->
+        </div>
         <div class="card shadow mb-4">
           <div class="card-body">
             <span>The users frequently appear together with the java tag : </span>
@@ -158,194 +153,273 @@
             </div>
           </div>
         </div>
-      <!-- End of Page Wrapper -->
+        <!-- End of Page Wrapper -->
 
-      <!-- Scroll to Top Button-->
-      <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-      </a>
+        <!-- Scroll to Top Button-->
+        <a class="scroll-to-top rounded" href="#page-top">
+          <i class="fas fa-angle-up"></i>
+        </a>
+      </div>
     </div>
   </div>
 </div>
-</div>
-      <!-- Bootstrap core JavaScript-->
-      <script src="vendor/jquery/jquery.min.js"></script>
-      <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap core JavaScript-->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-      <!-- Core plugin JavaScript-->
-      <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+<!-- Core plugin JavaScript-->
+<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-      <!-- Custom scripts for all pages-->
-      <script src="js/sb-admin-2.min.js"></script>
+<!-- Custom scripts for all pages-->
+<script src="js/sb-admin-2.min.js"></script>
 
-      <!-- Page level plugins -->
-      <script src="vendor/chart.js/Chart.min.js"></script>
+<!-- Page level plugins -->
+<script src="vendor/chart.js/Chart.min.js"></script>
 <script>
   function drawPieChart(path, chartId) {
     fetch(path)
-            .then(response => response.json())
-            .then(data => {
-              const labels = Object.keys(data);
-              const values = Object.values(data);
-              const ctx = document.getElementById(chartId);
+    .then(response => response.json())
+    .then(data => {
+      const labels = Object.keys(data);
+      const values = Object.values(data);
+      const ctx = document.getElementById(chartId);
 
-              new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                  labels: labels,
-                  datasets: [{
-                    data: values,
-                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc','#c51e1e','#ddda1e','#dd8a18','#1fd632','#d023d3','#e2d0d0','#aeff00','#7e29c8','#007fff','#eb1592','#00f91a','#ffb700'],
-                    hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf','#971818','#c1bf1e','#bd7b20','#24b233','#ad23af','#c4a9a9','#9ecf34','#5c207e','#166dc4','#ca2184','#1dc12e','#ce9d20'],
-                    hoverBorderColor: "rgba(234, 236, 244, 1)",
-                  }],
-                },
-                options: {
-                  maintainAspectRatio: false,
-                  tooltips: {
-                    backgroundColor: "rgb(255,255,255)",
-                    bodyFontColor: "#858796",
-                    borderColor: '#dddfeb',
-                    borderWidth: 1,
-                    xPadding: 15,
-                    yPadding: 15,
-                    displayColors: false,
-                    caretPadding: 10,
-                  },
-                  legend: {
-                    display: false
-                  },
-                  cutoutPercentage: 80,
-                },
-              });
-            });
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: values,
+            backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#c51e1e', '#ddda1e', '#dd8a18',
+              '#1fd632', '#d023d3', '#e2d0d0', '#aeff00', '#7e29c8', '#007fff', '#eb1592',
+              '#00f91a', '#ffb700'],
+            hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf', '#971818', '#c1bf1e', '#bd7b20',
+              '#24b233', '#ad23af', '#c4a9a9', '#9ecf34', '#5c207e', '#166dc4', '#ca2184',
+              '#1dc12e', '#ce9d20'],
+            hoverBorderColor: "rgba(234, 236, 244, 1)",
+          }],
+        },
+        options: {
+          maintainAspectRatio: false,
+          tooltips: {
+            backgroundColor: "rgb(255,255,255)",
+            bodyFontColor: "#858796",
+            borderColor: '#dddfeb',
+            borderWidth: 1,
+            xPadding: 15,
+            yPadding: 15,
+            displayColors: false,
+            caretPadding: 10,
+          },
+          legend: {
+            display: false
+          },
+          cutoutPercentage: 80,
+        },
+      });
+    });
   }
-  function drawBarChart(path,chartId,max) {
+
+  function drawEChart(path, chartID) {
     fetch(path)
-            .then(response => response.json())
-            .then(data => {
-              const sortedLabels = Object.keys(data).sort(function(a, b) { return data[b] - data[a] });
-              const sortedValues = sortedLabels.map(function(label) { return data[label]; });
+    .then(response => response.json())
+    .then(data => {
+      let labels = Object.keys(data);
+      const values = Object.values(data);
+      const chartData = labels.map((label, i) => ({value: values[i], name: label}));
 
-              function number_format(number, decimals, dec_point, thousands_sep) {
-                // *     example: number_format(1234.56, 2, ',', ' ');
-                // *     return: '1 234,56'
-                number = (number + '').replace(',', '').replace(' ', '');
-                var n = !isFinite(+number) ? 0 : +number,
-                        prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-                        sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-                        dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
-                        s = '',
-                        toFixedFix = function(n, prec) {
-                          var k = Math.pow(10, prec);
-                          return '' + Math.round(n * k) / k;
-                        };
-                // Fix for IE parseFloat(0.55).toFixed(0) = 0;
-                s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-                if (s[0].length > 3) {
-                  s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
-                }
-                if ((s[1] || '').length < prec) {
-                  s[1] = s[1] || '';
-                  s[1] += new Array(prec - s[1].length + 1).join('0');
-                }
-                return s.join(dec);
+      // Sort the data by value in descending order
+      chartData.sort((a, b) => b.value - a.value);
+
+      // Update labels array to match the sorted data
+      labels = chartData.map(item => item.name);
+
+      const chartDom = document.getElementById(chartID);
+      const myChart = echarts.init(chartDom, null, {
+        renderer: 'canvas',
+        useDirtyRect: false
+      });
+      let option;
+      option = {
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c} ({d}%)'
+        },
+        legend: {
+          top: '5%',
+          left: 'center',
+          data: labels
+        },
+        series: [
+          {
+            name: 'Access From',
+            type: 'pie',
+            radius: ['40%', '70%'],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderRadius: 10,
+              borderColor: '#fff',
+              borderWidth: 2
+            },
+            label: {
+              show: false,
+              position: 'center'
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: 40,
+                fontWeight: 'bold'
               }
+            },
+            labelLine: {
+              show: false
+            },
+            data: chartData
+          }
+        ]
+      };
 
-              var ctx = document.getElementById(chartId);
-              new Chart(ctx, {
-                type: 'bar',
-                data: {
-                  labels: sortedLabels,
-                  datasets: [{
-                    label: "",
-                    backgroundColor: "#4e73df",
-                    hoverBackgroundColor: "#2e59d9",
-                    borderColor: "#4e73df",
-                    data: sortedValues,
-                  }],
-                },
-                options: {
-                  maintainAspectRatio: false,
-                  layout: {
-                    padding: {
-                      left: 10,
-                      right: 25,
-                      top: 25,
-                      bottom: 0
-                    }
-                  },
-                  scales: {
-                    xAxes: [{
-                      time: {
-                        unit: ''
-                      },
-                      gridLines: {
-                        display: false,
-                        drawBorder: false
-                      },
-                      ticks: {
-                        maxTicksLimit: 15,
-                        callback: function(value, index, values) {
-                          if (value.length > 15) {
-                            return value.slice(0, 15) + '...';
-                          } else {
-                            return value;
-                          }
-                        }
-                      },
-                      maxBarThickness: 25,
-                    }],
-                    yAxes: [{
-                      ticks: {
-                        min: 0,
-                        max: max,
-                        maxTicksLimit: 10,
-                        padding: 10,
-                        // Include a dollar sign in the ticks
-                        callback: function(value, index, values) {
-                          return number_format(value);
-                        }
-                      },
-                      gridLines: {
-                        color: "rgb(234, 236, 244)",
-                        zeroLineColor: "rgb(234, 236, 244)",
-                        drawBorder: false,
-                        borderDash: [2],
-                        zeroLineBorderDash: [2]
-                      }
-                    }],
-                  },
-                  legend: {
-                    display: false
-                  },
-                  tooltips: {
-                    titleMarginBottom: 10,
-                    titleFontColor: '#6e707e',
-                    titleFontSize: 14,
-                    backgroundColor: "rgb(255,255,255)",
-                    bodyFontColor: "#858796",
-                    borderColor: '#dddfeb',
-                    borderWidth: 1,
-                    xPadding: 15,
-                    yPadding: 15,
-                    displayColors: false,
-                    caretPadding: 10,
-                    callbacks: {
-                      label: function(tooltipItem, chart) {
-                        var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                        return datasetLabel + number_format(tooltipItem.yLabel);
-                      }
-                    }
-                  },
-                }
-              });
-            });
+      option && myChart.setOption(option);
+      window.addEventListener('resize', myChart.resize);
+      myChart.resize({
+        width: 360,
+        height: 360
+      });
+    });
   }
-  drawPieChart('/api/UsersPage/chart1', 'myPieChart1');
-  drawPieChart('/api/UsersPage/chart2', 'myPieChart2');
-  drawPieChart('/api/UsersPage/chart3', 'myPieChart3');
-  drawBarChart('/api/UsersPage/chart4', 'myBarChart1',40);
+
+  function drawBarChart(path, chartId, max) {
+    fetch(path)
+    .then(response => response.json())
+    .then(data => {
+      const sortedLabels = Object.keys(data).sort(function (a, b) {
+        return data[b] - data[a]
+      });
+      const sortedValues = sortedLabels.map(function (label) {
+        return data[label];
+      });
+
+      function number_format(number, decimals, dec_point, thousands_sep) {
+        // *     example: number_format(1234.56, 2, ',', ' ');
+        // *     return: '1 234,56'
+        number = (number + '').replace(',', '').replace(' ', '');
+        var n = !isFinite(+number) ? 0 : +number,
+            prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+            sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+            dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+            s = '',
+            toFixedFix = function (n, prec) {
+              var k = Math.pow(10, prec);
+              return '' + Math.round(n * k) / k;
+            };
+        // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+        s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+        if (s[0].length > 3) {
+          s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+        }
+        if ((s[1] || '').length < prec) {
+          s[1] = s[1] || '';
+          s[1] += new Array(prec - s[1].length + 1).join('0');
+        }
+        return s.join(dec);
+      }
+
+      var ctx = document.getElementById(chartId);
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: sortedLabels,
+          datasets: [{
+            label: "",
+            backgroundColor: "#4e73df",
+            hoverBackgroundColor: "#2e59d9",
+            borderColor: "#4e73df",
+            data: sortedValues,
+          }],
+        },
+        options: {
+          maintainAspectRatio: false,
+          layout: {
+            padding: {
+              left: 10,
+              right: 25,
+              top: 25,
+              bottom: 0
+            }
+          },
+          scales: {
+            xAxes: [{
+              time: {
+                unit: ''
+              },
+              gridLines: {
+                display: false,
+                drawBorder: false
+              },
+              ticks: {
+                maxTicksLimit: 15,
+                callback: function (value, index, values) {
+                  if (value.length > 15) {
+                    return value.slice(0, 15) + '...';
+                  } else {
+                    return value;
+                  }
+                }
+              },
+              maxBarThickness: 25,
+            }],
+            yAxes: [{
+              ticks: {
+                min: 0,
+                max: max,
+                maxTicksLimit: 10,
+                padding: 10,
+                // Include a dollar sign in the ticks
+                callback: function (value, index, values) {
+                  return number_format(value);
+                }
+              },
+              gridLines: {
+                color: "rgb(234, 236, 244)",
+                zeroLineColor: "rgb(234, 236, 244)",
+                drawBorder: false,
+                borderDash: [2],
+                zeroLineBorderDash: [2]
+              }
+            }],
+          },
+          legend: {
+            display: false
+          },
+          tooltips: {
+            titleMarginBottom: 10,
+            titleFontColor: '#6e707e',
+            titleFontSize: 14,
+            backgroundColor: "rgb(255,255,255)",
+            bodyFontColor: "#858796",
+            borderColor: '#dddfeb',
+            borderWidth: 1,
+            xPadding: 15,
+            yPadding: 15,
+            displayColors: false,
+            caretPadding: 10,
+            callbacks: {
+              label: function (tooltipItem, chart) {
+                var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                return datasetLabel + number_format(tooltipItem.yLabel);
+              }
+            }
+          },
+        }
+      });
+    });
+  }
+
+  drawEChart('/api/UsersPage/chart1', 'myPieChart1');
+  drawEChart('/api/UsersPage/chart2', 'myPieChart2');
+  drawEChart('/api/UsersPage/chart3', 'myPieChart3');
+  drawBarChart('/api/UsersPage/chart4', 'myBarChart1', 40);
 </script>
 
 </body>

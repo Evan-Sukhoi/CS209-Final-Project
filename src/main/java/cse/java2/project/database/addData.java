@@ -33,15 +33,15 @@ public class addData {
   private static final String PASS = "LywMysql";
 
   public static void main(String[] args) {
-//    addQuestion();
+    addQuestion();
 //    updateQuestionAcptInfo();
 
 //    updateQuestionTags();
 //    addTags();
-//
+
 //    addTagsJavaRelated();
-//
-    updateUsers();
+
+//    updateUsers();
 
 //    addBodies();
   }
@@ -477,16 +477,15 @@ public class addData {
 
       for (int i = 0; i < items.size(); i++) {
         JsonObject item = items.get(i).getAsJsonObject();
-        tasks.add(CompletableFuture.runAsync(() -> insertJsonObjectIntoDatabase(item, api))
+        tasks.add(CompletableFuture.runAsync(() -> insertQuestionIntoDatabase(item, api))
         );
       }
       CompletableFuture.allOf(tasks.toArray(new CompletableFuture<?>[0])).join();
     });
-
   }
 
 
-  private static void insertJsonObjectIntoDatabase(JsonObject jsonObject, StackOverflowApi api) {
+  private static void insertQuestionIntoDatabase(JsonObject jsonObject, StackOverflowApi api) {
     String sql = "INSERT INTO questions (question_id, answer_count, is_answered, creation_date, accepted_answer_id, accepted_date, not_public_will, score, view_count, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)) {

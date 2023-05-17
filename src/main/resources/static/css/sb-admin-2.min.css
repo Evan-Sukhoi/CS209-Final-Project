@@ -11017,6 +11017,9 @@ a:focus {
   .chart-pie {
     height: calc(20rem - 43px) !important
   }
+  .chart-pie-2{
+    height: calc(30rem); !important;
+  }
 }
 
 .bg-login-image {
@@ -11443,3 +11446,18 @@ body.sidebar-toggled footer.sticky-footer {
   margin: 0 auto;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+}
+/*#myPieChart1 {*/
+/*  position: relative;*/
+/*  height: 100vh;*/
+/*  overflow: hidden;*/
+/*}*/
+
+/*#myPieChart3 {*/
+/*  position: relative;*/
+/*  height: 100vh;*/
+/*  overflow: hidden;*/
+/*}*/
