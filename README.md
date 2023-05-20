@@ -42,7 +42,7 @@
 
 通过addData类的main函数可以看出这一点。
 
-![image-20230517154915378](img/image-20230517154915378.png)
+![](img/image-20230520170121190.png)
 
 在实现逻辑上，共使用了两个类来完成操作，分别是addData类和StackOverflowlAPI类。后者用于处理所有向API网站发送的不同的请求并接收和封装网站返回的json格式数据，前者则通过调用它来获取数据，并负责在处理数据之后，通过java.sql库把数据插入数据库相应位置。
 
@@ -925,7 +925,22 @@ private static void insertQuestionIntoDatabase(JsonObject jsonObject, StackOverf
 
 ### 分析方法
 
-本项目使用了两种方法对java这些问题进行分析：
+本项目使用了两种方法对java有关的问题进行分析：
 
 - 分析经常与java一起出现的**标签**（tag）
-- 利用java
+- 利用com.github.javaparser包中的方法，提取问题、回答、评论中代码的包名、类名、方法名以获取其使用的**API**
+
+### 结论
+
+根据以上提到的两种方法，我们得到了两组数据。使用word cloud图表展示如下：
+
+![image-20230520173126785](img/image-20230520173126785.png)
+
+- 从标签的分析来看，可以得出以下结论：
+  1. Android 和 Spring Boot 是与 Java 最常见的关联标签，这说明了 Java 在 **Android应用开发**和**后端服务开发**（特别是使用 **Spring Boot 框架**）中的广泛应用。
+  2. 其他常见的标签，如 Spring、String、Arrays、Collections、Java-8、Maven、Eclipse 和 Hibernate，进一步揭示了 Java 开发者在**数据结构、版本特性、项目管理、开发工具**以及**持久化框架**等方面的常见关注点。
+  3. 对**多线程、日期处理、测试、性能、网络编程**等专题的关注也体现了 Java 开发者在更高级或更具挑战性的话题上的需求。
+
+- 从 API 的使用情况来看，我们可以得出以下结论：
+  1. 从包的角度来看，**`java.io`、`java.util`、`org.springframework`、`java.sql`、`javax.servlet`** 等是开发者常用的包，这与 Java 在**文件 I/O、数据处理、后端服务开发、数据库操作、Web 服务开发**等方面的广泛应用相符。
+  2. 从类和方法的角度来看，**IOException、Scanner、File、Connection、Matcher、Pattern、HttpHeaders、HttpURLConnection** 等是频繁出现的类和接口，而 `getInstance`、`run`、`onClick`、`getId`、`add`、`setName` 等是常用的方法，这反映了Java开发者在**异常处理、输入/输出、多线程、事件处理、对象属性访问、数据操作**等任务中的常见需求。
