@@ -323,21 +323,21 @@ private static void insertQuestionIntoDatabase(JsonObject jsonObject, StackOverf
 
 - **环状图**的方法如下，path为前端发送请求到达的路径，chartId表明要绘制的哪个数据图。
 
-![img](img/clip_image002-1684308521881-18.jpg)
+<img src="img/clip_image002-1684308521881-18.jpg" alt="img" style="zoom:80%;" />
 
  
 
 - **柱状图**的方法如下，柱状图的排序方式均设置为从大到小，path为前端发送请求到达的路径，chartId表明要绘制的哪个数据图，max表示y轴最大值。
 
-![img](img/clip_image004-1684308521882-19.jpg)
+<img src="img/clip_image004-1684308521882-19.jpg" alt="img" style="zoom:80%;" />
 
  
 
 - **单词云**的方法如下,path为前端发送请求到达的路径，cloudId表明要绘制的哪个数据图。
 
-![img](img/clip_image006-1684308521882-20.jpg)
+<img src="img/clip_image006-1684308521882-20.jpg" alt="img" style="zoom:80%;" />
 
-![img](img/clip_image008-1684308521882-21.jpg)
+<img src="img/clip_image008-1684308521882-21.jpg" alt="img" style="zoom:80%;" />
 
  
 
@@ -347,7 +347,7 @@ private static void insertQuestionIntoDatabase(JsonObject jsonObject, StackOverf
 
 - **前端**发送请求调用后端的代码或函数如下，第一个是百分比，第二个是环状图。
 
-![img](img/clip_image010-1684308521882-23.jpg)		![img](img/clip_image012-1684308521882-22.jpg) 
+​								 ![img](img/clip_image010-1684308521882-23.jpg)										![img](img/clip_image012-1684308521882-22.jpg) 
 
 
 
@@ -654,7 +654,7 @@ private static void insertQuestionIntoDatabase(JsonObject jsonObject, StackOverf
 
 - **前端**发送请求调用后端的代码或函数如下，第一个是tag 或 tags 的组合，第二个是柱状图。
 
-![img](img/clip_image111.jpg)
+<img src="img/clip_image111.jpg" alt="img" style="zoom:80%;" />
 
 ![img](img/clip_image113.jpg)
 
@@ -669,15 +669,13 @@ private static void insertQuestionIntoDatabase(JsonObject jsonObject, StackOverf
 
 - 对应的**RestController**方法如下
 
-
-![img](img/clip_image117.jpg)
+<img src="img/clip_image117.jpg" alt="img" style="zoom:80%;" />
 
  
 
 - 相关的**Services**方法如下，按降序获取了前14条数据。
 
-
-![img](img/clip_image119.jpg)
+<img src="img/clip_image119.jpg" alt="img" style="zoom:80%;" />
 
  
 
@@ -700,7 +698,7 @@ private static void insertQuestionIntoDatabase(JsonObject jsonObject, StackOverf
 
 - **前端**发送请求调用后端的代码或函数如下，第一个是tag 或 tags 的组合，第二个是柱状图。
 
-![img](img/clip_image125.jpg)
+<img src="img/clip_image125.jpg" alt="img" style="zoom:80%;" />
 
 ![img](img/clip_image127.jpg)
 
@@ -722,8 +720,7 @@ private static void insertQuestionIntoDatabase(JsonObject jsonObject, StackOverf
 
 - 相关的**Services**方法如下，按降序获取前14条数据。
 
-
-![img](img/clip_image133.jpg)
+<img src="img/clip_image133.jpg" alt="img" style="zoom:80%;" />
 
  
 
@@ -759,15 +756,13 @@ private static void insertQuestionIntoDatabase(JsonObject jsonObject, StackOverf
 
 - 相关的**Services**方法如下，按照用户数量（在一个Thread里相同的用户只记录一次）分为7个范围。
 
-
-![img](img/clip_image143.jpg)
+<img src="img/clip_image143.jpg" alt="img" style="zoom:80%;" />
 
  
 
 - 相关的**Repositories**数据库查询方法如下
 
-
-![img](img/clip_image145.jpg)
+<img src="img/clip_image145.jpg" alt="img" style="zoom:80%;" />
 
  
 
@@ -781,28 +776,25 @@ private static void insertQuestionIntoDatabase(JsonObject jsonObject, StackOverf
 
 - **前端**发送请求调用后端的代码或函数如下，第一个是answer方面的环状图，第二个是comment方面的环状图。
 
-![img](img/clip_image149.jpg)
+<img src="img/clip_image149.jpg" alt="img" style="zoom:80%;" />
 
  
 
 - 对应的**RestController**方法如下
 
-
-![img](img/clip_image151.jpg)
+<img src="img/clip_image151.jpg" alt="img" style="zoom:80%;" />
 
  
 
 - 相关的**Services**方法如下，按照用户数量（在一个Thread里相同的用户只记录一次），在**answer**方面分为7个范围，在**comment**方面分为4个范围。
 
-
-![img](img/clip_image153.jpg)
+<img src="img/clip_image153.jpg" alt="img" style="zoom:80%;" />
 
  
 
 - 相关的**Repositories**数据库查询方法如下
 
-
-![img](img/clip_image155.jpg)
+<img src="img/clip_image155.jpg" alt="img" style="zoom:80%;" />
 
  
 
@@ -906,3 +898,34 @@ private static void insertQuestionIntoDatabase(JsonObject jsonObject, StackOverf
 
 ## Part 4 总结分析
 
+### 数据说明
+
+本次项目收集了StackOverflow平台上600余条带有Java标签的问题，兼顾了时间上的最新、热度上的最高和历史上的最受欢迎。
+
+同时，数据源在时间和热度分布上具有多样性，较为均衡地覆盖了各个阶段的问题。
+
+具体来说，通过配置不同的api参数来获取这些不同的数据：
+
+```java
+    params.put("page", "1");
+    params.put("sort", "activity");
+//    params.put("sort", "votes");
+//    params.put("sort", "hot");
+```
+
+- `    params.put("sort", "activity")`是按照最近活跃度排序，根据此排序方式选出的是最近新提出的问题，具有很强的时效性。本项目此类共选取了约200条。
+
+- `    params.put("sort", "votes")`是按照历史点赞数排序，通过调整`params.put("page", "1")`来选取不同层次的数据。本项目此类分别在page=1，page=12，page=20各选取了80条左右的数据。
+
+- `    params.put("sort", "hot")`是按照近期热门榜单排序，本项目选取了100条左右。
+
+  
+
+  综上，本项目选取的数据具有一定的有效性和说服力，可以提取出一些有用的信息和结论。
+
+### 分析方法
+
+本项目使用了两种方法对java这些问题进行分析：
+
+- 分析经常与java一起出现的**标签**（tag）
+- 利用java

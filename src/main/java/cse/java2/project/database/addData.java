@@ -9,6 +9,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.ImportDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+
 import com.google.gson.JsonObject;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -44,6 +54,107 @@ public class addData {
 //    updateUsers();
 
 //    addBodies();
+
+    findHotAPI();
+  }
+
+  private static void findHotAPI() {
+    List<String> questionBodies = getAllBodies("questions");
+    List<String> answerBodies = getAllBodies("answers");
+    List<String> commentBodies = getAllBodies("comments");
+
+    Map<String, Integer> api = new HashMap<>();
+
+    findAPI(questionBodies, api);
+    findAPI(answerBodies, api);
+    findAPI(commentBodies, api);
+
+    //print api
+    api.entrySet().stream().sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+        .limit(100).forEach(System.out::println);
+
+    // 把api的数据导入到数据库hot_api
+    try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)) {
+      String sql = "INSERT INTO hot_api (name, count) VALUES (?, ?)";
+      PreparedStatement pstmt = conn.prepareStatement(sql);
+      for (Map.Entry<String, Integer> entry : api.entrySet()) {
+        pstmt.setString(1, entry.getKey());
+        pstmt.setInt(2, entry.getValue());
+        pstmt.executeUpdate();
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private static Map<String, Integer> findAPI(List<String> bodies, Map<String, Integer> api) {
+
+    for (String body : bodies) {
+//      System.out.println(body);
+      // 用JavaParser解析代码片段
+      JavaParser javaParser = new JavaParser(
+          new ParserConfiguration().setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_8)
+              .setStoreTokens(true));
+      ParseResult<CompilationUnit> parseResult = javaParser.parse(body);
+      if (parseResult.isSuccessful()) {
+        CompilationUnit cu = parseResult.getResult().get();
+
+        // 使用Visitor模式遍历AST并找出所有方法声明
+        cu.accept(new VoidVisitorAdapter<Void>() {
+          @Override
+          public void visit(MethodDeclaration md, Void arg) {
+            super.visit(md, arg);
+            api.put(md.getNameAsString(), api.getOrDefault(md.getNameAsString(), 0) + 1);
+          }
+        }, null);
+
+        // 使用Visitor模式遍历AST并找出所有类声明
+        cu.accept(new VoidVisitorAdapter<Void>() {
+          @Override
+          public void visit(ClassOrInterfaceDeclaration cid, Void arg) {
+            super.visit(cid, arg);
+            api.put(cid.getNameAsString(), api.getOrDefault(cid.getNameAsString(), 0) + 1);
+          }
+        }, null);
+
+        // 遍历所有的import声明
+        for (ImportDeclaration importDeclaration : cu.getImports()) {
+          api.put(importDeclaration.getNameAsString(),
+              api.getOrDefault(importDeclaration.getNameAsString(), 0) + 1);
+        }
+
+      }
+    }
+    return api;
+  }
+
+  private static List<String> getAllBodies(String table) {
+    String sql = "SELECT body FROM " + table + ";";
+    List<String> bodies = new ArrayList<>();
+    try (
+        Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+    ) {
+      ResultSet rs = pstmt.executeQuery();
+      String regex = "<code>(.*?)</code>";
+
+      Pattern pattern = Pattern.compile(regex, Pattern.DOTALL);
+      Matcher matcher;
+      while (rs.next()) {
+        String body = rs.getString("body");
+
+        if (body != null) {
+          matcher = pattern.matcher(body);
+          while (matcher.find()) {
+            String code = matcher.group(1);
+            bodies.add(code);
+          }
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return bodies;
   }
 
   private static void addBodies() {
@@ -460,7 +571,7 @@ public class addData {
     // 使用StackOverflowApi类的fetchData方法，向StackExchange API发送请求
     StackOverflowApi api = new StackOverflowApi();
     Map<String, String> params = new HashMap<>(1);
-    params.put("pagesize", "1");
+    params.put("pagesize", "100");
     params.put("page", "1");
     params.put("sort", "activity");
 //    params.put("sort", "votes");
