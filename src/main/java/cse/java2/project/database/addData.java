@@ -43,7 +43,7 @@ public class addData {
   private static final String PASS = "LywMysql";
 
   public static void main(String[] args) {
-    addQuestion();
+//    addQuestion();
 //    updateQuestionAcptInfo();
 
 //    updateQuestionTags();
@@ -55,7 +55,7 @@ public class addData {
 
 //    addBodies();
 
-    findHotAPI();
+//    findHotAPI();
   }
 
   private static void findHotAPI() {

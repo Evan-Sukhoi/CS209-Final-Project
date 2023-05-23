@@ -319,6 +319,18 @@ private static void insertQuestionIntoDatabase(JsonObject jsonObject, StackOverf
 
 ## Part 3 成果与代码片段展示
 
+### 概述
+
+前端总体效果如下：
+
+![image-20230523172606659](img/image-20230523172606659.png)
+
+![image-20230523172417903](img/image-20230523172417903.png)
+
+![image-20230523172444612](img/image-20230523172444612.png)
+
+
+
 我们的可视化方式有三种：环状图、柱状图、单词云。每种可视化的方式都有相应的方法进行绘制。
 
 - **环状图**的方法如下，path为前端发送请求到达的路径，chartId表明要绘制的哪个数据图。
@@ -422,7 +434,9 @@ private static void insertQuestionIntoDatabase(JsonObject jsonObject, StackOverf
 
 ![img](img/clip_image036.jpg)
 
- 
+
+
+![image-20230523171807700](img/image-20230523171807700.png)
 
 #### 展示answers数的分布
 
@@ -455,9 +469,9 @@ private static void insertQuestionIntoDatabase(JsonObject jsonObject, StackOverf
 
 - **网页**展现的结果如下
 
- 
 
-![img](img/clip_image046.jpg)
+
+![image-20230523171932352](img/image-20230523171932352.png)
 
  
 
@@ -546,7 +560,7 @@ private static void insertQuestionIntoDatabase(JsonObject jsonObject, StackOverf
 
  
 
-![img](img/clip_image076.jpg)
+![image-20230523172005984](img/image-20230523172005984.png)
 
  
 
@@ -768,7 +782,7 @@ private static void insertQuestionIntoDatabase(JsonObject jsonObject, StackOverf
 
 - **网页**展现的结果如下
 
-![img](img/clip_image147.jpg)
+![image-20230523172048320](img/image-20230523172048320.png)
 
  
 
@@ -800,9 +814,7 @@ private static void insertQuestionIntoDatabase(JsonObject jsonObject, StackOverf
 
 - **网页**展现的结果如下
 
-![img](img/clip_image157.jpg)
-
-![img](img/clip_image159.jpg)
+![image-20230523172136265](img/image-20230523172136265.png)
 
 #### 展示哪些用户参与 java thread 讨论最活跃 
 
@@ -893,6 +905,16 @@ private static void insertQuestionIntoDatabase(JsonObject jsonObject, StackOverf
 ![img](img/clip_image189.jpg)
 
 ![img](img/clip_image191.jpg)
+
+### RESTful API 部分
+
+为了方便用户使用，我们仿照**Stack Exchange API**的Documentation设计思路，为用户提供了图形化界面来快速生成带有参数的RESTful API链接。
+
+效果如下：
+
+![image-20230523173613923](img/image-20230523173613923.png)
+
+![image-20230523173644020](img/image-20230523173644020.png)
 
  
 
